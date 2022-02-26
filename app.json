@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "follow-expenses",
+    "slug": "follow-expenses",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
