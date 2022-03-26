@@ -1,6 +1,5 @@
 import styled from "styled-components/native";
 import { Modalize } from "react-native-modalize";
-import { FontAwesome } from '@expo/vector-icons';
 
 export const Modal = styled(Modalize).attrs(props => {
     return {
@@ -12,5 +11,9 @@ export const Modal = styled(Modalize).attrs(props => {
 })``;
 
 export const Container = styled.View`
-    padding: 10px;
+    padding: 12px;
+`;
+
+export const InputContainer = styled.View`
+    margin-bottom: 8px;
 `;
