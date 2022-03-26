@@ -26,7 +26,7 @@ export const THEME = {
         SUCCESS_DISABLE: 'rgba(50, 213, 131, 0.5)',
 
         DANGER: 'rgba(240, 68, 56, 1)',
-       
+
         WHITE: 'rgba(237, 245, 251, 1)',
         BLACK: 'rgba(0, 0, 0, 1)',
         SHADOW: 'rgba(0, 0, 0, 0.3)',
@@ -43,21 +43,60 @@ export const THEME = {
     },
 
     SIZE: {
-        xs: RFPercentage(2),
-        sm: RFPercentage(3.5),
-        md: RFPercentage(5),
-        lg: RFPercentage(6.5),
-        xl: RFPercentage(10),
+        /**
+         * Xtreme large (sl)
+         */
+        TITLE_MAIN: RFPercentage(4),
+        /**
+        * Large (lg)
+        */
+        TITLE: RFPercentage(3.5),
+        /**
+         * Greater than medium and less than large (sl)
+         */
+        SUB_TITLE: RFPercentage(3),
+        /**
+         * Medium (md)
+         */
+        NORMAL: RFPercentage(2.5),
+        /**
+        * Normal small (ns)
+        */
+         NORMAL_SMALL: RFPercentage(2),
+        /**
+        * Small (sm)
+        */
+        SMALL: RFPercentage(1.5),
 
-        S1: RFPercentage(1),
-        S1_5: RFPercentage(1.5),
-        S2: RFPercentage(2),
-        S2_5: RFPercentage(2.5),
-        S3: RFPercentage(3),
-        S3_5: RFPercentage(3.5),
-        S4: RFPercentage(4),
-        S4_5: RFPercentage(4.5),
-        S5: RFPercentage(5),
+        /**
+         * Xtreme small (xs)
+         */
+        VERY_SMALL: RFPercentage(1),
+
+        // /**
+        //  * Xtreme small
+        //  */
+        // xs: RFPercentage(1),
+        // /**
+        //  * Small
+        //  */
+        // sm: RFPercentage(1.5),
+        // /**
+        //  * Medium
+        //  */
+        // md: RFPercentage(2.5),
+        // /**
+        //  * Greater than medium and less than large
+        //  */
+        // sl: RFPercentage(3),
+        // /**
+        //  * Large
+        //  */
+        // lg: RFPercentage(3.5),
+        // /**
+        //  * Xtreme large
+        //  */
+        // xl: RFPercentage(4),
     },
 
     FONTS: {
