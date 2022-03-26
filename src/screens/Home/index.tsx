@@ -14,6 +14,7 @@ const bezier = Easing.bezier(0.25, 0.1, 0.25, 1);
 
 const Home: React.FC = () => {
     const topHeader = useSharedValue(-150);
+    const scaleHeader = useSharedValue(0.1);
     const scaleContent = useSharedValue(0.1);
     const opacityTitle = useSharedValue(0);
 
@@ -23,6 +24,9 @@ const Home: React.FC = () => {
                 duration: 2000,
                 easing: bezier
             }),
+            transform: [{
+                scale: withTiming(scaleHeader.value, { duration: 3000, easing: bezier })
+            }]
         };
     });
 
@@ -46,6 +50,7 @@ const Home: React.FC = () => {
     useEffect(() => {
         setTimeout(() => {
             scaleContent.value = 1;
+            scaleHeader.value = 2;
             topHeader.value = 0;
             opacityTitle.value = 1;
         }, 100);

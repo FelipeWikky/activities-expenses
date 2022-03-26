@@ -10,8 +10,8 @@ export const Container = styled.View`
 `;
 
 export const Header = styled(Animated.View)`
-  align-items: flex-end;
-  flex-direction: row;
+  align-items: flex-start;
+  flex-direction: column;
   margin-top: 20%;
   position: relative;
 `;
@@ -27,15 +27,15 @@ export const Content = styled(Animated.View)`
 
 export const Title = styled(Animated.Text)`
   font-family: ${({ theme }) => theme.FONTS.REGULAR};
-  font-size: ${({ theme }) => theme.SIZE.lg}px;
-  color: ${({ theme }) => theme.COLORS.TEXT};
+  font-size: ${({ theme }) => theme.SIZE.TITLE_MAIN}px;
+  color: ${({ theme }) => theme.COLORS.LABEL};
 `;
 
 export const SubTitle = styled(Animated.Text)`
   font-family: ${({ theme }) => theme.FONTS.REGULAR};
-  font-size: ${({ theme }) => theme.SIZE.sm}px;
-  color: ${({ theme }) => theme.COLORS.TEXT};
-  margin: 0px 0px 8px 8px;
+  font-size: ${({ theme }) => theme.SIZE.NORMAL}px;
+  color: ${({ theme }) => theme.COLORS.LABEL};
+  margin-top: -10px;
 `;
 
 export const SigninContainer = styled(Animated.View)`
@@ -53,7 +53,7 @@ export const SigninTouchable = styled.TouchableOpacity`
 export const SigninText = styled.Text`
   color: ${({ theme }) => theme.COLORS.TEXT};
   font-family: ${({ theme }) => theme.FONTS.REGULAR};
-  font-size: ${({ theme }) => theme.SIZE.S3}px;
+  font-size: ${({ theme }) => theme.SIZE.NORMAL}px;
 `;
 
 export const Footer = styled(Animated.View)`
@@ -65,6 +65,6 @@ export const Footer = styled(Animated.View)`
 export const Version = styled(Animated.Text)`
   color: ${({ theme }) => theme.COLORS.TEXT};
   font-family: ${({ theme }) => theme.FONTS.MEDIUM};
-  font-size: ${({ theme }) => theme.SIZE.S1_5}px;
+  font-size: ${({ theme }) => theme.SIZE.SMALL}px;
 `;
 
