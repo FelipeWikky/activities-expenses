@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NativeSyntheticEvent, TextInput, TextInputFocusEventData } from 'react-native';
-import { Container, Content, StyledInput, Label, Error, FAIcon, IOIcon } from './styles';
-import { IconNames, InputProps, InputTypes} from './types'
+import { Container, Content, StyledInput, FAIcon, IOIcon } from './styles';
+import { IconNames, InputProps, InputTypes } from './types';
+
+import { Label } from '../../components';
 
 const getIconByProps = (name: keyof typeof IconNames, filled = false, size?: number) => <FAIcon name={name} size={size} filled={filled} />;
 
@@ -37,7 +39,7 @@ export const Input: React.FC<InputProps> = ({ label, error, rightIcon, leftIcon,
 
     return (
         <Container>
-            {label && (<Label>{label}</Label>)}
+            {label && (<Label type='NORMAL_SMALL' strong>{label}</Label>)}
             <Content hasError={!!error}>
                 {leftIcon && getIconByProps(leftIcon, filled || focused)}
                 <StyledInput
@@ -52,7 +54,7 @@ export const Input: React.FC<InputProps> = ({ label, error, rightIcon, leftIcon,
                 />
                 {passwordIcon || rightIcon && getIconByProps(rightIcon)}
             </Content>
-            {error && (<Error>*{error}</Error>)}
+            {error && (<Label type='ERROR_LOW'>*{error}</Label>)}
         </Container>
     );
 }
