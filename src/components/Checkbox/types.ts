@@ -1,9 +1,7 @@
-import { TouchableOpacityProps } from "react-native";
+import { TextInputProps } from "react-native";
 import { Control } from "react-hook-form";
-export interface CheckboxProps extends Omit<TouchableOpacityProps, "onPress"> {
+
+export type CheckboxProps = TextInputProps & {
     name: string;
     control: Control<any>;
-    
-    checked?: boolean;
-    onPress?: <T>(name: keyof T, checked?: boolean) => void;
 }

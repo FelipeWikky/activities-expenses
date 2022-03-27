@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyledCheckbox } from "./styles";
 import { CheckboxProps } from "./types";
 import { Controller } from "react-hook-form";
 
-
-export const Checkbox: React.FC<CheckboxProps> = ({ children, onPress, control, ...props }) => {
+//TODO: entender o erro quando passa as props pro styled que eu preciso inserir any senao da erro
+export const Checkbox: React.FC<CheckboxProps> = (props) => {
+    const {children, name, control} = props;
     return (
         <Controller
-            name={props.name}
+            name={name}
             control={control}
             render={({ field: { value, onChange } }) => (
                 <StyledCheckbox
                     {...props as any}
-                    checked={!!(value)}
-                    onPress={() => onChange(!(value))}
+                    editable={false}
+                    value={value ? "true" : "false"}
+                    onPressIn={() => onChange(!value)}
                 >
                     {children}
                 </StyledCheckbox>
