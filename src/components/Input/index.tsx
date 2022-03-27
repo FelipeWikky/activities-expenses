@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NativeSyntheticEvent, TextInput, TextInputFocusEventData } from 'react-native';
 import { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { Controller, Control } from "react-hook-form";
+import { Controller } from "react-hook-form";
 
 import { Container, Content, StyledInput, FAIcon, IOIcon, DynamicLabel } from './styles';
 import { IconNames, InputProps, InputTypes } from './types';

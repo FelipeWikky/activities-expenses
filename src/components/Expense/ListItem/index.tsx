@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 
 import { Container, Loading, EachItemList, Header, HeaderContent, PlusIcon } from "./styles";
 
-import { items as MOCK_ITEMS } from "../../../services/mock";
 import { ExpenseItem } from "../../../types/models/expenseItem";
 import { EachItem } from "../EachItem";
 import { Label } from "../../Label";
@@ -12,6 +11,7 @@ import { useExpenseContext } from "../../../contexts/expense/hook";
 import { Button } from "../../Button";
 import { ExpenseService } from "../../../services/expense.service";
 import { Alert } from "react-native";
+import { sortByDate } from "../../../utils/sort";
 
 export const ListItem: React.FC = () => {
     const { items: expenseItems } = useExpenseContext();
@@ -21,12 +21,15 @@ export const ListItem: React.FC = () => {
     const [fetchingItems, setFetchingItems] = useState(false);
 
     const getAllExpenseItems = useCallback(async () => {
+        setItems([]);
         setFetchingItems(true);
         const expenseItems = await ExpenseService.getAll();
         if (expenseItems) {
-            setItems(expenseItems);
+            setTimeout(() => {
+                setItems(expenseItems)
+                setFetchingItems(false);
+            }, 2500);
         }
-        setFetchingItems(false);
     }, []);
 
     useEffect(() => {
@@ -45,6 +48,11 @@ export const ListItem: React.FC = () => {
     }, [detailRef]);
 
     const onSaveNewExpenseItem = useCallback(async (item: ExpenseItem) => {
+        if (item?.id) onUpdateExpenseItem(item)
+        else onCreateExpenseItem(item);
+    }, []);
+
+    const onCreateExpenseItem = useCallback(async (item: ExpenseItem) => {
         const saved = await ExpenseService.create(item);
         if (saved) {
             Alert.alert("Criação", "Criado com sucesso");
@@ -53,6 +61,17 @@ export const ListItem: React.FC = () => {
         }
         else {
             Alert.alert("Criação", "Erro ao criar");
+        }
+    }, []);
+    const onUpdateExpenseItem = useCallback(async (item: ExpenseItem) => {
+        const saved = await ExpenseService.update(item);
+        if (saved) {
+            Alert.alert("Atualização", "Atualizado com sucesso");
+            detailRef?.current?.close();
+            getAllExpenseItems();
+        }
+        else {
+            Alert.alert("Atualização", "Erro ao Atualizado");
         }
     }, []);
 
@@ -80,6 +99,7 @@ export const ListItem: React.FC = () => {
                 onlyView={false}
                 onSave={onSaveNewExpenseItem}
                 onCancel={onCancelDetailExpense}
+                onCloseModal={() => setItemSelected(undefined)}
             />
 
             <Header>
@@ -103,7 +123,7 @@ export const ListItem: React.FC = () => {
 
             {fetchingItems && <Loading />}
             <EachItemList
-                data={items}
+                data={sortByDate<ExpenseItem>(items, 'updatedAt')}
                 keyExtractor={item => item.id ? item.id.toString() : item.title}
                 renderItem={({ item }) => (
                     <EachItem
@@ -115,12 +135,4 @@ export const ListItem: React.FC = () => {
             />
         </Container>
     );
-}
-
-async function getItems() {
-    return new Promise<ExpenseItem[]>((resolve, reject) => {
-        setTimeout(() => {
-            resolve(MOCK_ITEMS)
-        }, 1500);
-    });
 }

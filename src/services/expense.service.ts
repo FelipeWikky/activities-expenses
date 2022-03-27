@@ -10,7 +10,9 @@ class ExpenseServiceClass implements AbstractInterface<ExpenseItem> {
         if (!savedItems) savedItems = [];
         savedItems.push({
             ...expenseItem,
-            id: savedItems.length + 1
+            id: savedItems.length + 1,
+            createdAt: new Date(),
+            updatedAt: new Date()
         });
         return await Storage.setItem(KEY, savedItems);
     }
@@ -36,12 +38,12 @@ class ExpenseServiceClass implements AbstractInterface<ExpenseItem> {
 
     async update(data: ExpenseItem): Promise<boolean> {
         let savedItems = await Storage.getAllItems<ExpenseItem>(KEY);
-        let savedItem = savedItems.find(item => String(item?.id) === String(data?.id));
-        if(savedItem) {
-            savedItem = {
-                ...savedItem,
-                ...data
-            }
+        const index = savedItems.findIndex(item => String(item.id) === String(data.id));
+        if(index > -1) {
+            savedItems[index] = {
+                ...data,
+                updatedAt: new Date()
+            };
             return await Storage.setItem(KEY, savedItems);
         }
         return false;
