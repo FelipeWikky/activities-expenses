@@ -1,4 +1,5 @@
 import { TouchableOpacityProps } from "react-native";
+import { THEME } from "../../theme";
 
 export enum ButtonType {
     DEFAULT = 'DEFAULT', SUCCESS = 'SUCCESS', DANGER = 'DANGER',
@@ -19,5 +20,6 @@ export enum ButtonSize {
 export type ButtonTextProps = TouchableOpacityProps & {
     text?: string;
     size?: keyof typeof ButtonSize;
+    textSize?: keyof typeof THEME.SIZE;
     type?: keyof typeof ButtonType;
 }
