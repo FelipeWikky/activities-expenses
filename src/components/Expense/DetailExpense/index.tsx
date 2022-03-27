@@ -1,9 +1,10 @@
-import { useCallback, useImperativeHandle, useMemo, useRef, forwardRef, useState, useEffect } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef, forwardRef, useEffect, Props } from "react";
 import { Modalize } from "react-native-modalize";
 import { Dimensions } from "react-native";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import * as Random from 'expo-random';
 
 import { Modal, Container, Content, Header, Title, Description } from "./styles";
 
@@ -15,10 +16,8 @@ import { Checkbox } from "../../Checkbox";
 
 import { ExpenseItem } from "../../../types/models/expenseItem";
 import { getPercentageValue } from "../../../utils";
-import { formatDate } from "../../../utils/format";
+import { formatDate, formatDateTime } from "../../../utils/format";
 import { Input } from "../../Input";
-import { useForm as useFormHook } from "../../../hooks/useForm";
-
 
 export type DetailExpenseHandles = {
     open: () => void;
@@ -43,16 +42,18 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
     const { onlyView = true, onSave, onCancel } = props;
     const modalizeRef = useRef<Modalize>(null);
 
-    const { control, handleSubmit, formState: { errors } } = useForm<ExpenseItem>({
-        resolver: yupResolver(schema)
+    const { control, handleSubmit, setValue, reset, getValues, formState: {  errors, } } = useForm<ExpenseItem>({
+        resolver: yupResolver(schema),
+        defaultValues: props?.data,
+        shouldFocusError: true,
     });
-    console.log('eerrors ', errors)
 
-    const {
-        formData: data
-    } = useFormHook<ExpenseItem>(undefined, schema);
     useEffect(() => {
-        if (props?.data && props?.data.id) {
+        console.log('props.data ', props?.data)
+        if (props?.data) {
+            for (const key of Object.keys(props.data)) {
+                setValue(key as any, props.data[key]);
+            }
         }
     }, [props?.data]);
 
@@ -72,27 +73,43 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
     const MODAL_HEIGHT = useMemo(() => getPercentageValue(Dimensions.get('window').height, 20), [Dimensions]);
 
     const dateFormatted = useMemo(() => {
-        if (data?.createdAt) return formatDate(data.createdAt);
-        return formatDate(new Date());
-    }, [data?.createdAt]);
+        const createdAt = props?.data?.createdAt;
+        if (createdAt) return formatDateTime(createdAt);
+        return 'dd/mm/yyyy';
+    }, [props?.data]);
 
     const idFormatted = useMemo(() => {
-        if (data?.id) return '# ' + data.id;
+        const id = props?.data?.id;
+        if (id) return `# ${id}`;
         return '';
-    }, [data?.id]);
+    }, [props?.data]);
 
     const onSavePress = useCallback((data: ExpenseItem) => {
-        console.log('onclick', data)
+        if (onSave) {
+            data.createdAt = new Date();
+            onSave(data);
+            resetFields();
+        }
     }, []);
 
-    const onCancelPress = useCallback(() => {
+    const resetFields = () => {
+        reset({
+            id: '', title: '', description: '', comment: '', finished: false, hasError: false, createdAt: ''
+        });
+    }
 
+    const onCancelPress = useCallback((fireCancel = true) => {
+        if (onCancel && fireCancel) {
+            onCancel();
+        }
+        resetFields();
     }, []);
 
     return (
         <Modal
             ref={modalizeRef}
             modalHeight={MODAL_HEIGHT}
+            onClosed={() => onCancelPress(false)}
             scrollViewProps={{
                 showsHorizontalScrollIndicator: false,
                 showsVerticalScrollIndicator: false,
@@ -142,7 +159,6 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             <Checkbox
                                 control={control}
                                 name="finished"
-                                checked={data?.finished}
                             />
                         </Box>
                         <Box>
@@ -152,7 +168,6 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             <Checkbox
                                 control={control}
                                 name="hasError"
-                                checked={data?.hasError}
                             />
                         </Box>
                     </Box>
@@ -164,7 +179,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             Comentários
                         </Title>
                         <Description>
-                            {data?.comment}
+                            {getValues("comment")}
                         </Description>
                     </Box>
 
@@ -181,7 +196,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                 </Content>
             </Container>
-        </Modal>
+        </Modal >
     );
 }
 
