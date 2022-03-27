@@ -10,7 +10,8 @@ export const Content = styled.View<{hasError?: boolean}>`
     flex-direction: row;
     align-items: center;
     padding: 0px 4px;
-    border: 1px solid ${({ theme, hasError }) => hasError ? theme.COLORS.ERROR_LOW : theme.COLORS.INPUT_BORDER};
+    border-bottom-width: 1px;
+    border-bottom-color: ${({ theme, hasError }) => hasError ? theme.COLORS.INPUT_ERROR : theme.COLORS.INPUT_BORDER};
     background-color: ${({ theme }) => theme.COLORS.INPUT_BACKGROUND};
     border-radius: 8px;
 `;
@@ -18,7 +19,7 @@ export const Content = styled.View<{hasError?: boolean}>`
 export const StyledInput = styled.TextInput`
     min-height: 36px;
     padding-left: 5px;
-    color: ${({ theme }) => theme.COLORS.INPUT_TEXT};
+    color: ${({ theme }) => theme.COLORS.TEXT};
     font-family: ${({ theme }) => theme.FONTS.REGULAR};
     font-size: ${({ theme }) => theme.SIZE.NORMAL_SMALL}px;
     flex: 1;
