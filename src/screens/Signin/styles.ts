@@ -3,10 +3,7 @@ import { Modalize } from "react-native-modalize";
 
 export const Modal = styled(Modalize).attrs(props => {
     return {
-        // rootStyle: { backgroundColor: props.theme.COLORS.BG_LOW },
-        overlayStyle: { backgroundColor: props.theme.COLORS.SHADOW },
-        handleStyle: { backgroundColor: props.theme.COLORS.BLACK },
-        childrenStyle: { backgroundColor: props.theme.COLORS.BG_LOW },
+        overlayStyle: { backgroundColor: props.theme.SHADOW[4] },
     }
 })``;
 

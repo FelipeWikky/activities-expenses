@@ -5,7 +5,7 @@ export const Container = styled.View`
   flex: 1;
   align-items: center;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme.COLORS.BG_LOW};
+  background-color: ${({ theme }) => theme.COLORS.COLOR_300};
   position: relative;
 `;
 
@@ -19,7 +19,7 @@ export const Header = styled(Animated.View)`
 export const Content = styled(Animated.View)`
   align-items: center;
   justify-content: space-evenly;
-  background-color: ${({ theme }) => theme.COLORS.BG_MED};
+  background-color: ${({ theme }) => theme.COLORS.COLOR_300};
   border-radius: 10px;
   height: 30%;
   width: 75%;
