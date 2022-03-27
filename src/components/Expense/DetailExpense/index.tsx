@@ -136,6 +136,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     <Box>
                         <Input
                             control={control} type="text" name="title" label="Atividade"
+                            placeholder="Do que se trata esta atividade?"
                             error={errors?.title?.message}
                         />
                     </Box>
@@ -144,7 +145,8 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                     <Box>
                         <Input
-                            control={control} type="text" name="description" label="Descrição" placeholder="Uma breve descricao do bagui"
+                            control={control} type="text" name="description" label="Descrição" 
+                            placeholder="Uma breve descrição da atividade"
                             error={errors?.description?.message}
                         />
                     </Box>
