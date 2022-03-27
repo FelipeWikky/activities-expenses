@@ -14,6 +14,7 @@ export const Content = styled.View<{hasError?: boolean}>`
     border-bottom-color: ${({ theme, hasError }) => hasError ? theme.COLORS.INPUT_ERROR : theme.COLORS.INPUT_BORDER};
     background-color: ${({ theme }) => theme.COLORS.INPUT_BACKGROUND};
     border-radius: 8px;
+    width: 100%;
 `;
 
 export const StyledInput = styled.TextInput`
@@ -23,6 +24,7 @@ export const StyledInput = styled.TextInput`
     font-family: ${({ theme }) => theme.FONTS.REGULAR};
     font-size: ${({ theme }) => theme.SIZE.NORMAL_SMALL}px;
     flex: 1;
+    width: 100%;
 `;
 
 export const IOIcon = styled(Ionicons).attrs(props => ({
