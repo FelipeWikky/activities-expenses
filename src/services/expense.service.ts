@@ -10,7 +10,7 @@ class ExpenseServiceClass implements AbstractInterface<ExpenseItem> {
         if (!savedItems) savedItems = [];
         savedItems.push({
             ...expenseItem,
-            id: savedItems.length
+            id: savedItems.length + 1
         });
         return await Storage.setItem(KEY, savedItems);
     }
