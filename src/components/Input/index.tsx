@@ -45,6 +45,7 @@ export const Input: React.FC<InputProps> = ({ label, error, rightIcon, leftIcon,
                 <StyledInput
                     {...props as any}
                     ref={inputRef}
+                    placeholder={(filled || focused) ? placeholder : ""}
                     secureTextEntry={!showPassword}
                     onFocus={onFocus}
                     onBlur={onBlur}
