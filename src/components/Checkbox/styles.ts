@@ -8,8 +8,8 @@ export const StyledCheckbox = styled.TouchableOpacity.attrs((_) => ({
 }))<CheckboxProps>`
     height: 24px;
     width: 24px;
-    background-color: ${({ checked }) => checked ? getColorByType("DEFAULT") : "transparent"};
-    border-width: ${({ checked }) => !checked ? 1 : 0};
-    border-color: ${({ checked }) => !checked ? getColorByType("DEFAULT") : "transparent"};
+    background-color: ${({ checked }) => checked ? getColorByType("TEXT") : "transparent"};
+    border-width: ${({ checked }) => !checked ? "1px" : 0};
+    border-color: ${({ checked }) => !checked ? getColorByType("TEXT") : "transparent"};
     border-radius: 4px;
 `;
