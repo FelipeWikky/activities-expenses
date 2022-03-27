@@ -161,6 +161,10 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             <Checkbox
                                 control={control}
                                 name="finished"
+                                icon={{
+                                    background: "SUCCESS",
+                                    color: "WHITE"
+                                }}
                             />
                         </Box>
                         <Box>
@@ -170,6 +174,10 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             <Checkbox
                                 control={control}
                                 name="hasError"
+                                icon={{
+                                    background: "DANGER",
+                                    color: "WHITE"
+                                }}
                             />
                         </Box>
                     </Box>
