@@ -1,5 +1,8 @@
 import styled from "styled-components/native";
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+
 import { CheckerProps, TextProps } from "./types";
+import { Button } from "../../Button";
 
 const SHADOW = {
     1: "rgba(0, 0, 0, 0.1)",
@@ -20,7 +23,21 @@ export const DetailsButton = styled.TouchableOpacity`
     width: 100%;
     justify-content: space-between;
     padding: 8px 4px;
+    max-height: 76px;
+`;
+
+export const SwipableButton = styled(Swipeable)`
+    width: 100%;
+    justify-content: space-between;
+    padding: 8px 4px;
     min-height: 80px;
+`;
+
+export const RemoveButton = styled(Button).attrs(props => ({
+    empty: true
+}))`
+    width: 60px;
+    background-color: ${({theme}) => theme.COLORS.DANGER}
 `;
 
 export const Title = styled.Text<TextProps>`
@@ -52,4 +69,11 @@ export const Checker = styled.View<CheckerProps>`
     background-color: ${({ checked, error }) => error ? "red" : checked ? "green" : "transparent"};
     right: 4px;
     top: 4px;
+`;
+
+export const CreatedAt = styled.Text<TextProps>`
+    padding: 4px 2px 2px;
+    align-self: flex-end;
+    font-size: ${({ theme }) => theme.SIZE.SMALL}px;
+    color: ${({ theme }) => theme.SHADOW[4]}
 `;
