@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NativeSyntheticEvent, TextInput, TextInputFocusEventData } from 'react-native';
 import { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { Controller, Control } from "react-hook-form";
 
 import { Container, Content, StyledInput, FAIcon, IOIcon, DynamicLabel } from './styles';
 import { IconNames, InputProps, InputTypes } from './types';
@@ -13,7 +14,7 @@ const getIconByProps = (name: keyof typeof IconNames, filled = false, size?: num
 
 const getPasswordEyeIcon = (name: any, action: () => void) => <IOIcon name={name} onPress={action} />;
 
-export const Input: React.FC<InputProps> = ({ label, error, rightIcon, leftIcon, name, onChangeText, placeholder, ...props }) => {
+export const Input: React.FC<InputProps> = ({ control, name, label, error, rightIcon, leftIcon, onChangeText, placeholder, ...props }) => {
 
     const inputRef = useRef<TextInput>(null);
     const [showPassword, setShowPassword] = useState(!(props.type === InputTypes.password));
@@ -42,7 +43,7 @@ export const Input: React.FC<InputProps> = ({ label, error, rightIcon, leftIcon,
     }, []);
 
     const labelTopPosition = useSharedValue(9);
-    const labelLeftPosition = useSharedValue(8); 
+    const labelLeftPosition = useSharedValue(8);
 
     const labelPositionStyles = useAnimatedStyle(() => ({
         top: withTiming(labelTopPosition.value, {
@@ -56,7 +57,7 @@ export const Input: React.FC<InputProps> = ({ label, error, rightIcon, leftIcon,
     }));
 
     useEffect(() => {
-        if(filled || focused) {
+        if (filled || focused) {
             labelTopPosition.value = -2;
             labelLeftPosition.value = 0;
         } else {
@@ -68,26 +69,34 @@ export const Input: React.FC<InputProps> = ({ label, error, rightIcon, leftIcon,
     return (
         <Container>
             {!!(label) && (
-                <DynamicLabel  type='NORMAL_SMALL' strong style={[labelPositionStyles, error && {color: THEME.COLORS.ERROR}]}>
+                <DynamicLabel type='NORMAL_SMALL' strong style={[labelPositionStyles, error && { color: THEME.COLORS.ERROR }]}>
                     {label}
                 </DynamicLabel>
             )}
             <Content hasError={!!error}>
                 {leftIcon && getIconByProps(leftIcon, filled || focused)}
-                <StyledInput
-                    {...props as any}
-                    ref={inputRef}
-                    placeholder={(filled || focused) ? placeholder : ""}
-                    secureTextEntry={!showPassword}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    onChangeText={value => {
-                        if (onChangeText) onChangeText(name, value);
-                    }}
+                <Controller
+                    name={name}
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                        <StyledInput
+                            // {...props as any}
+                            value={value}
+                            // ref={inputRef}
+                            placeholder={(filled || focused) ? placeholder : ""}
+                            secureTextEntry={!showPassword}
+                            onFocus={onFocus}
+                            onBlur={onBlur}
+                            onChangeText={text => {
+                                setFilled(!!(text.trim()))
+                                onChange(text);
+                            }}
+                        />
+                    )}
                 />
                 {passwordIcon || rightIcon && getIconByProps(rightIcon)}
             </Content>
-            {error && (<Label type='ERROR_LOW' style={{marginLeft: 6}}>*{error}</Label>)}
+            {error && (<Label type='ERROR_LOW' style={{ marginLeft: 6 }}>*{error}</Label>)}
         </Container>
     );
 }

@@ -1,4 +1,5 @@
 import { TextInputProps } from 'react-native';
+import { Control } from "react-hook-form";
 
 export enum InputTypes {
     text = 'text', password = 'password'
@@ -9,6 +10,7 @@ export enum IconNames {
 }
 
 export type InputProps = Omit<TextInputProps, 'onChangeText'> & {
+    control: Control<any>;
     name: string;
     label?: string;
     error?: string;

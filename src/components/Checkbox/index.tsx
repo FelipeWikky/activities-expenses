@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { StyledCheckbox } from "./styles";
 import { CheckboxProps } from "./types";
+import { Controller } from "react-hook-form";
 
 
-export const Checkbox: React.FC<CheckboxProps> = ({ children, onPress, ...props }) => {
-    const [localChecked, setLocalChecked] = useState(props.checked);
-    useEffect(() => {
-        setLocalChecked(props.checked)
-    }, [props.checked]);
+export const Checkbox: React.FC<CheckboxProps> = ({ children, onPress, control, ...props }) => {
     return (
-        <StyledCheckbox
-            {...props as any}
-            onPress={() => {
-                if (onPress) onPress(props.name, localChecked)
-            }}
-        >
-            {children}
-        </StyledCheckbox>
+        <Controller
+            name={props.name}
+            control={control}
+            render={({ field: { value, onChange } }) => (
+                <StyledCheckbox
+                    {...props as any}
+                    checked={!!(value)}
+                    onPress={() => onChange(!(value))}
+                >
+                    {children}
+                </StyledCheckbox>
+            )}
+        />
     );
 }

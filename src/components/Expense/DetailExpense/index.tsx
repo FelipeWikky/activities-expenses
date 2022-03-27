@@ -2,6 +2,8 @@ import { useCallback, useImperativeHandle, useMemo, useRef, forwardRef, useState
 import { Modalize } from "react-native-modalize";
 import { Dimensions } from "react-native";
 import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { Modal, Container, Content, Header, Title, Description } from "./styles";
 
@@ -15,7 +17,7 @@ import { ExpenseItem } from "../../../types/models/expenseItem";
 import { getPercentageValue } from "../../../utils";
 import { formatDate } from "../../../utils/format";
 import { Input } from "../../Input";
-import { useForm } from "../../../hooks/useForm";
+import { useForm as useFormHook } from "../../../hooks/useForm";
 
 
 export type DetailExpenseHandles = {
@@ -37,16 +39,20 @@ const schema = yup.object().shape({
 });
 
 const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandles, DetailExpenseProps> = (props, ref) => {
+
     const { onlyView = true, onSave, onCancel } = props;
     const modalizeRef = useRef<Modalize>(null);
 
+    const { control, handleSubmit, formState: { errors } } = useForm<ExpenseItem>({
+        resolver: yupResolver(schema)
+    });
+    console.log('eerrors ', errors)
+
     const {
-        formData: data, onChangeFormData: onChangeData,
-        getErrorByField, clearFormData: clearData, onSubmitFormData: onSubmitData
-    } = useForm<ExpenseItem>(undefined, schema);
+        formData: data
+    } = useFormHook<ExpenseItem>(undefined, schema);
     useEffect(() => {
         if (props?.data && props?.data.id) {
-            onChangeData('*', props?.data, true);
         }
     }, [props?.data]);
 
@@ -75,23 +81,18 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
         return '';
     }, [data?.id]);
 
-    const onUpdateData = useCallback((attribute: keyof ExpenseItem, value: string | number | boolean | Date) => {
-        onChangeData(attribute, value);
+    const onSavePress = useCallback((data: ExpenseItem) => {
+        console.log('onclick', data)
     }, []);
 
-    const onSavePress = useCallback(() => {
-        onSubmitData(onSave);
-    }, [data, onSubmitData, onSave]);
     const onCancelPress = useCallback(() => {
-        clearData();
-        if (onCancel) onCancel();
-    }, [data, onSubmitData, onCancel]);
+
+    }, []);
 
     return (
         <Modal
             ref={modalizeRef}
             modalHeight={MODAL_HEIGHT}
-            onClose={() => clearData()}
             scrollViewProps={{
                 showsHorizontalScrollIndicator: false,
                 showsVerticalScrollIndicator: false,
@@ -104,7 +105,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     {!onlyView && (
                         <Button
                             type="SUCCESS" text="Salvar" textSize="NORMAL_SMALL"
-                            onPress={() => onSavePress()}
+                            onPress={handleSubmit(onSavePress)}
                         />
                     )}
                     {!!(idFormatted) && <Title>{idFormatted}</Title>}
@@ -117,9 +118,8 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                 <Content>
                     <Box>
                         <Input
-                            type="text" name="title" label="Atividade"
-                            value={data?.title} onChangeText={onUpdateData}
-                            error={getErrorByField("title")}
+                            control={control} type="text" name="title" label="Atividade"
+                            error={errors?.title?.message}
                         />
                     </Box>
 
@@ -127,10 +127,8 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                     <Box>
                         <Input
-                            type="text" name="description" label="Descrição" placeholder="Uma breve descricao do bagui"
-                            multiline numberOfLines={4}
-                            value={data?.description} onChangeText={onUpdateData}
-                            error={getErrorByField("description")}
+                            control={control} type="text" name="description" label="Descrição" placeholder="Uma breve descricao do bagui"
+                            error={errors?.description?.message}
                         />
                     </Box>
 
@@ -142,11 +140,9 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                                 Finalizado?
                             </Title>
                             <Checkbox
+                                control={control}
                                 name="finished"
                                 checked={data?.finished}
-                                onPress={function <ExpenseItem>(attribute, value) {
-                                    onUpdateData(attribute, !value)
-                                }}
                             />
                         </Box>
                         <Box>
@@ -154,12 +150,9 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                                 Houve algum erro?
                             </Title>
                             <Checkbox
+                                control={control}
                                 name="hasError"
                                 checked={data?.hasError}
-                                onPress={function <ExpenseItem>(attribute, value) {
-                                    onUpdateData(attribute, !value)
-                                }}
-                            // onPress={(attribute, value) => onUpdateData(attribute, !value)}
                             />
                         </Box>
                     </Box>
