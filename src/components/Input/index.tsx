@@ -25,6 +25,9 @@ export const Input: React.FC<InputProps> = ({ control, name, label, error, right
     useEffect(() => {
         setFilled(props.value ? true : false)
     }, [props.value]);
+    useEffect(() => {
+        setFilled(props.value ? true : false)
+    }, [control]);
 
     const passwordIcon = useMemo(() => {
         if (!(props.type === InputTypes.password)) return null;
@@ -78,21 +81,22 @@ export const Input: React.FC<InputProps> = ({ control, name, label, error, right
                 <Controller
                     name={name}
                     control={control}
-                    render={({field: {onChange, value}}) => (
-                        <StyledInput
-                            // {...props as any}
-                            value={value}
-                            // ref={inputRef}
-                            placeholder={(filled || focused) ? placeholder : ""}
-                            secureTextEntry={!showPassword}
-                            onFocus={onFocus}
-                            onBlur={onBlur}
-                            onChangeText={text => {
-                                setFilled(!!(text.trim()))
-                                onChange(text);
-                            }}
-                        />
-                    )}
+                    render={({ field: { onChange, value } }) => {
+                        if (value) setFilled(true);
+                        return (
+                            <StyledInput
+                                value={value}
+                                placeholder={(filled || focused) ? placeholder : ""}
+                                secureTextEntry={!showPassword}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                                onChangeText={text => {
+                                    setFilled(!!(text.trim()))
+                                    onChange(text);
+                                }}
+                            />
+                        )
+                    }}
                 />
                 {passwordIcon || rightIcon && getIconByProps(rightIcon)}
             </Content>
