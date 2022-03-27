@@ -7,9 +7,9 @@ import { ButtonTextProps} from './types';
 export const StyledButton = styled.TouchableOpacity.attrs(props => ({
     activeOpacity: Constants.BUTTON_CLICK_OPACITY
 }))<ButtonTextProps>`
-    background-color: ${(props) => getColorByType(props.type)};
-    border-radius: 50px;
-    padding: 10px 30px;
+    background-color: ${({type, empty}) => empty ? "transparent" : getColorByType(type)};
+    border-radius: ${({empty}) =>  empty ? 0 : "50px"};
+    padding: ${({empty}) => empty ? 0 : "10px 30px"};
     align-items: center;
     justify-content: center;
 `;

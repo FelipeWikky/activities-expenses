@@ -3,6 +3,8 @@ import { THEME } from "../../theme";
 
 export enum ButtonType {
     DEFAULT = 'DEFAULT', SUCCESS = 'SUCCESS', DANGER = 'DANGER',
+    DEFAULT_DISABLE = "DEFAULT_DISABLE", SUCCESS_DISABLE = "SUCCESS_DISABLE", DANGER_DISABLE = "DANGER_DISABLE",
+    TEXT = "TEXT"
 }
 
 export enum ButtonState {
@@ -22,4 +24,8 @@ export type ButtonTextProps = TouchableOpacityProps & {
     size?: keyof typeof ButtonSize;
     textSize?: keyof typeof THEME.SIZE;
     type?: keyof typeof ButtonType;
+    /**
+     * If true, not use style of button. Default: false
+     */
+    empty?: boolean;
 }
