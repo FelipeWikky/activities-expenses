@@ -1,4 +1,5 @@
 import { TextProps } from "react-native"
+import { THEME } from "../../theme";
 
 export enum LabelType {
     NORMAL = "NORMAL", NORMAL_SMALL = "NORMAL_SMALL",
@@ -20,4 +21,8 @@ export type LabelProps = TextProps & {
      * If true, use font weight Medium. Priority: 1.  Default: Normal
      */
     strong?: boolean;
+    /**
+     * Tint text of Label with other colors
+     */
+    color?: keyof typeof THEME.COLORS;
 }

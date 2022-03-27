@@ -6,7 +6,7 @@ import { LabelProps, LabelType } from "./types";
 type Type = keyof typeof LabelType;
 
 export const StyledLabel = styled(Animated.Text)<LabelProps>`
-    color: ${({ theme, type }) => type === LabelType.ERROR || type === LabelType.ERROR_LOW ? theme.COLORS.ERROR : theme.COLORS.LABEL};
+    color: ${({ theme, type, color }) => color ? theme.COLORS[color] : type === LabelType.ERROR || type === LabelType.ERROR_LOW ? theme.COLORS.ERROR : theme.COLORS.LABEL};
     font-family: ${({ type, bold, strong }) => getFontFamilyByType(type, bold, strong)};
     font-size: ${({ type }) => getFontSizeByType(type)}px;
 `;

@@ -17,7 +17,6 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
             name={name}
             control={control}
             render={({ field: { value, onChange, name } }) => {
-                console.log('to name ', name, ' value ', value)
                 return (
                     <TouchableOpacity onPress={() => onChange(!value)}>
                         {showIcon
