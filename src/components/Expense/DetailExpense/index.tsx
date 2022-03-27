@@ -1,16 +1,21 @@
 import { useCallback, useImperativeHandle, useMemo, useRef, forwardRef, useState, useEffect } from "react";
 import { Modalize } from "react-native-modalize";
+import { Dimensions } from "react-native";
 
 import { Modal, Container, Content, Header, Title, Description } from "./styles";
 
-import { ExpenseItem } from "../../../types/models/expenseItem";
-import { getPercentageValue } from "../../../utils";
-import { Dimensions, Text } from "react-native";
-import { formatDate } from "../../../utils/format";
-import { Button } from "../../Button";
-import { Checkbox } from "../../Checkbox";
 import { Box } from "../../../layout/Box";
 import { Line } from "../../../layout/Line";
+
+import { Button } from "../../Button";
+import { Checkbox } from "../../Checkbox";
+
+import { ExpenseItem } from "../../../types/models/expenseItem";
+import { getPercentageValue } from "../../../utils";
+import { formatDate } from "../../../utils/format";
+import { Input } from "../..";
+import { useForm } from "../../../hooks/useForm";
+
 
 export type DetailExpenseHandles = {
     open: () => void;
@@ -29,11 +34,10 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
     const { onlyView = true, onSavePress, onCancelPress } = props;
     const modalizeRef = useRef<Modalize>(null);
 
-    const [data, setData] = useState<ExpenseItem>();
-
+    const { data, onChangeData } = useForm<ExpenseItem>();
     useEffect(() => {
         if (props?.data && props?.data.id) {
-            setData(props.data);
+            onChangeData('*', props?.data, true);
         }
     }, [props?.data]);
 
@@ -54,7 +58,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
     const dateFormatted = useMemo(() => {
         if (data?.createdAt) return formatDate(data.createdAt);
-        return '';
+        return formatDate(new Date());
     }, [data?.createdAt]);
 
     const idFormatted = useMemo(() => {
@@ -62,8 +66,8 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
         return '';
     }, [data?.id]);
 
-    const onUpdateData = useCallback((attribute: string, value: string | number | boolean | Date) => {
-        setData(prev => ({ ...prev, [attribute]: value }));
+    const onUpdateData = useCallback((attribute: keyof ExpenseItem, value: string | number | boolean | Date) => {
+        onChangeData(attribute, value);
     }, []);
 
     return (
@@ -83,20 +87,17 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                         <Button
                             type="SUCCESS" text="Salvar" textSize="NORMAL_SMALL"
                             onPress={() => {
-                                if (onSavePress) {
-                                    onSavePress(data);
-                                }
-                                close();
+                                console.log('darta ', data)
+                                if (onSavePress) onSavePress(data);
+                                // close();
                             }}
                         />
                     )}
-                    {idFormatted && <Title>{idFormatted}</Title>}
+                    {!!(idFormatted) && <Title>{idFormatted}</Title>}
                     <Button
                         type="DANGER" text="Cancelar" textSize="NORMAL_SMALL"
                         onPress={() => {
-                            if (onCancelPress) {
-                                onCancelPress(data);
-                            }
+                            if (onCancelPress) onCancelPress(data);
                             close();
                         }}
                     />
@@ -104,23 +105,20 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                 <Content>
                     <Box>
-                        <Title>
-                            Atividade
-                        </Title>
-                        <Description>
-                            {data?.title}
-                        </Description>
+                        <Input
+                            type="text" name="title" label="Atividade"
+                            value={data?.title} onChangeText={onUpdateData}
+                        />
                     </Box>
 
                     <Line shadow={2} marginVertical={12} />
 
                     <Box>
-                        <Title>
-                            Descrição
-                        </Title>
-                        <Description>
-                            {data?.description}
-                        </Description>
+                        <Input
+                            type="text" name="description" label="Descrição" placeholder="Uma breve descricao do bagui"
+                            multiline numberOfLines={4}
+                            value={data?.description} onChangeText={onUpdateData}
+                        />
                     </Box>
 
                     <Line shadow={2} marginVertical={12} />
@@ -133,7 +131,9 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             <Checkbox
                                 name="finished"
                                 checked={data?.finished}
-                                onPress={(attribute, value) => onUpdateData(attribute, !value)}
+                                onPress={function <ExpenseItem>(attribute, value) {
+                                    onUpdateData(attribute, !value)
+                                }}
                             />
                         </Box>
                         <Box>
@@ -143,7 +143,10 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             <Checkbox
                                 name="hasError"
                                 checked={data?.hasError}
-                                onPress={(attribute, value) => onUpdateData(attribute, !value)}
+                                onPress={function <ExpenseItem>(attribute, value) {
+                                    onUpdateData(attribute, !value)
+                                }}
+                            // onPress={(attribute, value) => onUpdateData(attribute, !value)}
                             />
                         </Box>
                     </Box>
@@ -165,7 +168,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                         <Title>
                             Criado em
                         </Title>
-                        <Description style={{marginBottom: 2}}>
+                        <Description style={{ marginBottom: 2 }}>
                             {dateFormatted}
                         </Description>
                     </Box>
