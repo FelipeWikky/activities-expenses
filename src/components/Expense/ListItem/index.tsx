@@ -52,6 +52,7 @@ export const ListItem: React.FC = () => {
                 ref={detailRef}
                 data={itemSelected}
                 onlyView={false}
+                onSave={item => console.log('save' , item)}
             />
 
             <Header>

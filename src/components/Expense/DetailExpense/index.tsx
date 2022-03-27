@@ -1,6 +1,7 @@
 import { useCallback, useImperativeHandle, useMemo, useRef, forwardRef, useState, useEffect } from "react";
 import { Modalize } from "react-native-modalize";
 import { Dimensions } from "react-native";
+import * as yup from "yup";
 
 import { Modal, Container, Content, Header, Title, Description } from "./styles";
 
@@ -13,7 +14,7 @@ import { Checkbox } from "../../Checkbox";
 import { ExpenseItem } from "../../../types/models/expenseItem";
 import { getPercentageValue } from "../../../utils";
 import { formatDate } from "../../../utils/format";
-import { Input } from "../..";
+import { Input } from "../../Input";
 import { useForm } from "../../../hooks/useForm";
 
 
@@ -26,15 +27,23 @@ type DetailExpenseProps = {
     data?: ExpenseItem;
     onlyView?: boolean;
 
-    onSavePress?: (item?: ExpenseItem) => void;
-    onCancelPress?: (item?: ExpenseItem) => void;
+    onSave?: (item?: ExpenseItem) => void;
+    onCancel?: (item?: ExpenseItem) => void;
 }
 
+const schema = yup.object().shape({
+    title: yup.string().required("Este campo é obrigatório").min(3, "Mínimo de 3 caracteres"),
+    description: yup.string().required("Este campo é obrigatório").min(3, "Mínimo de 3 caracteres"),
+});
+
 const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandles, DetailExpenseProps> = (props, ref) => {
-    const { onlyView = true, onSavePress, onCancelPress } = props;
+    const { onlyView = true, onSave, onCancel } = props;
     const modalizeRef = useRef<Modalize>(null);
 
-    const { data, onChangeData } = useForm<ExpenseItem>();
+    const {
+        formData: data, onChangeFormData: onChangeData,
+        getErrorByField, clearFormData: clearData, onSubmitFormData: onSubmitData
+    } = useForm<ExpenseItem>(undefined, schema);
     useEffect(() => {
         if (props?.data && props?.data.id) {
             onChangeData('*', props?.data, true);
@@ -70,10 +79,19 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
         onChangeData(attribute, value);
     }, []);
 
+    const onSavePress = useCallback(() => {
+        onSubmitData(onSave);
+    }, [data, onSubmitData, onSave]);
+    const onCancelPress = useCallback(() => {
+        clearData();
+        if (onCancel) onCancel();
+    }, [data, onSubmitData, onCancel]);
+
     return (
         <Modal
             ref={modalizeRef}
             modalHeight={MODAL_HEIGHT}
+            onClose={() => clearData()}
             scrollViewProps={{
                 showsHorizontalScrollIndicator: false,
                 showsVerticalScrollIndicator: false,
@@ -86,20 +104,13 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     {!onlyView && (
                         <Button
                             type="SUCCESS" text="Salvar" textSize="NORMAL_SMALL"
-                            onPress={() => {
-                                console.log('darta ', data)
-                                if (onSavePress) onSavePress(data);
-                                // close();
-                            }}
+                            onPress={() => onSavePress()}
                         />
                     )}
                     {!!(idFormatted) && <Title>{idFormatted}</Title>}
                     <Button
                         type="DANGER" text="Cancelar" textSize="NORMAL_SMALL"
-                        onPress={() => {
-                            if (onCancelPress) onCancelPress(data);
-                            close();
-                        }}
+                        onPress={() => onCancelPress()}
                     />
                 </Header>
 
@@ -108,6 +119,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                         <Input
                             type="text" name="title" label="Atividade"
                             value={data?.title} onChangeText={onUpdateData}
+                            error={getErrorByField("title")}
                         />
                     </Box>
 
@@ -118,6 +130,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             type="text" name="description" label="Descrição" placeholder="Uma breve descricao do bagui"
                             multiline numberOfLines={4}
                             value={data?.description} onChangeText={onUpdateData}
+                            error={getErrorByField("description")}
                         />
                     </Box>
 

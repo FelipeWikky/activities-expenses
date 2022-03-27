@@ -5,7 +5,7 @@ import { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reani
 import { Container, Content, StyledInput, FAIcon, IOIcon, DynamicLabel } from './styles';
 import { IconNames, InputProps, InputTypes } from './types';
 
-import { Label } from '../../components';
+import { Label } from '../Label';
 import { Constants } from '../../utils/constants';
 import { THEME } from '../../theme';
 
