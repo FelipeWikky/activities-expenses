@@ -3,7 +3,6 @@ import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { formatDateTime } from "../../../utils/format";
-import { Line } from "../../../layout/Line";
 
 import {
     Container, Title, Description, CreatedAt, Checker,
@@ -11,7 +10,8 @@ import {
 } from "./styles";
 
 import { ItemProps } from "./types";
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import { Box } from '../../../layout/Box';
 
 export const EachItem: React.FC<ItemProps> = ({ data, onSelectItem, onRemoveItem }) => {
     const ref = useRef<Swipeable>(null);
@@ -57,6 +57,22 @@ export const EachItem: React.FC<ItemProps> = ({ data, onSelectItem, onRemoveItem
         );
     }, [data, ref]);
 
+    const renderUpdatedAt = useCallback(() => {
+        if (!data) return '';
+        if (!data.createdAt || !data.updatedAt) return '';
+        if (data?.createdAt === data?.updatedAt) return '';
+        if (data?.createdAt !== data?.updatedAt) return formatDateTime(data?.updatedAt);
+        return '';
+    }, [data]);
+
+    const renderCreatedAt = useCallback(() => {
+        if (!data) return '';
+        if (!data.createdAt || !data.updatedAt) return '';
+        if (data?.createdAt === data?.updatedAt) return formatDateTime(data?.createdAt);
+        if (data?.createdAt !== data?.updatedAt) return '';
+        return '';
+    }, [data]);
+
     return (
         <Container>
             <SwipableButton
@@ -75,14 +91,20 @@ export const EachItem: React.FC<ItemProps> = ({ data, onSelectItem, onRemoveItem
                     <Title finished={data.finished}>
                         {data.title}
                     </Title>
-                    <Line shadow={2} />
+
+
                     <Description finished={data.finished}>
                         {data.description}
                     </Description>
 
-                    <CreatedAt>
-                        {formatDateTime(data?.createdAt)}
-                    </CreatedAt>
+                    <Box direction='row' justifyContent='space-between'>
+                        <CreatedAt>
+                            Quando? {formatDateTime(data?.when)}
+                        </CreatedAt>
+                        <CreatedAt>
+                            {renderUpdatedAt() ? "Atualizado em " + renderUpdatedAt() : "Criado em " + renderCreatedAt()}
+                        </CreatedAt>
+                    </Box>
 
                     <Checker checked={data.finished} error={data.hasError} />
                 </DetailsButton>
