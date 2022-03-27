@@ -10,6 +10,8 @@ import { formatDate } from "../../../utils/format";
 import { DetailExpense, DetailExpenseHandles } from "../DetailExpense";
 import { useExpenseContext } from "../../../contexts/expense/hook";
 import { Button } from "../../Button";
+import { ExpenseService } from "../../../services/expense.service";
+import { Alert } from "react-native";
 
 export const ListItem: React.FC = () => {
     const { items: expenseItems } = useExpenseContext();
@@ -18,22 +20,18 @@ export const ListItem: React.FC = () => {
     const [itemSelected, setItemSelected] = useState<ExpenseItem>();
     const [fetchingItems, setFetchingItems] = useState(false);
 
+    const getAllExpenseItems = useCallback(async () => {
+        setFetchingItems(true);
+        const expenseItems = await ExpenseService.getAll();
+        if (expenseItems) {
+            setItems(expenseItems);
+        }
+        setFetchingItems(false);
+    }, []);
 
-    // useEffect(() => {
-    //     async function handleGetItems() {
-    //         try {
-    //             setFetchingItems(true);
-    //             setItems([]);
-    //             const data = await getItems();
-    //             setItems(data);
-    //         } catch (error) {
-    //             setItems([]);
-    //         } finally {
-    //             setFetchingItems(false);
-    //         }
-    //     }
-    //     handleGetItems();
-    // }, []);
+    useEffect(() => {
+        getAllExpenseItems();
+    }, []);
 
     const detailRef = useRef<DetailExpenseHandles>(null);
 
@@ -46,13 +44,42 @@ export const ListItem: React.FC = () => {
         detailRef?.current?.open();
     }, [detailRef]);
 
+    const onSaveNewExpenseItem = useCallback(async (item: ExpenseItem) => {
+        const saved = await ExpenseService.create(item);
+        if (saved) {
+            Alert.alert("Criação", "Criado com sucesso");
+            detailRef?.current?.close();
+            getAllExpenseItems();
+        }
+        else {
+            Alert.alert("Criação", "Erro ao criar");
+        }
+    }, []);
+
+    const onCancelDetailExpense = useCallback(() => {
+        setItemSelected(undefined);
+        detailRef?.current?.close();
+    }, []);
+
+    const onRemoveItemFromList = useCallback((item: ExpenseItem) => {
+        const removed = ExpenseService.remove(item);
+        if (removed) {
+            Alert.alert("Delete", "Deletado com sucesso");
+            getAllExpenseItems();
+        }
+        else {
+            Alert.alert("Delete", "Erro ao deletar");
+        }
+    }, []);
+
     return (
         <Container>
             <DetailExpense
                 ref={detailRef}
                 data={itemSelected}
                 onlyView={false}
-                onSave={item => console.log('save' , item)}
+                onSave={onSaveNewExpenseItem}
+                onCancel={onCancelDetailExpense}
             />
 
             <Header>
@@ -78,7 +105,13 @@ export const ListItem: React.FC = () => {
             <EachItemList
                 data={items}
                 keyExtractor={item => item.id ? item.id.toString() : item.title}
-                renderItem={({ item, }) => <EachItem data={item} onSelectItem={onSelectItemFromList} />}
+                renderItem={({ item }) => (
+                    <EachItem
+                        data={item}
+                        onSelectItem={onSelectItemFromList}
+                        onRemoveItem={onRemoveItemFromList}
+                    />
+                )}
             />
         </Container>
     );
