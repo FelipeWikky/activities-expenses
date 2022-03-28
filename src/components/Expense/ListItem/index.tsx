@@ -1,22 +1,26 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import Animated, { withTiming, useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 
-import { Container, Loading, EachItemList, Header, HeaderContent, PlusIcon } from "./styles";
+import { 
+    Container, Loading, EachItemList, Header, HeaderContent, PlusIcon, 
+    FilterIndicatorIcon, SearchInput, Ticker } from "./styles";
 
 import { ExpenseItem } from "../../../types/models/expenseItem";
 import { EachItem } from "../EachItem";
 import { Label } from "../../Label";
 import { formatDate } from "../../../utils/format";
 import { DetailExpense, DetailExpenseHandles } from "../DetailExpense";
-import { useExpenseContext } from "../../../contexts/expense/hook";
 import { Button } from "../../Button";
 import { ExpenseService } from "../../../services/expense.service";
-import { Alert } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { sortByDate } from "../../../utils/sort";
+import { Constants } from "../../../utils/constants";
+import { Box } from "../../../layout/Box";
+import { Checker } from "../../Checker";
 
 export const ListItem: React.FC = () => {
-    const { items: expenseItems } = useExpenseContext();
-
-    const [items, setItems] = useState<ExpenseItem[]>(expenseItems);
+    const [rootItems, setRootItems] = useState<ExpenseItem[]>([]);
+    const [items, setItems] = useState<ExpenseItem[]>([]);
     const [itemSelected, setItemSelected] = useState<ExpenseItem>();
     const [fetchingItems, setFetchingItems] = useState(false);
 
@@ -25,10 +29,9 @@ export const ListItem: React.FC = () => {
         setFetchingItems(true);
         const expenseItems = await ExpenseService.getAll();
         if (expenseItems) {
-            setTimeout(() => {
-                setItems(expenseItems)
-                setFetchingItems(false);
-            }, 2500);
+            setItems(expenseItems);
+            setRootItems(expenseItems);
+            setFetchingItems(false);
         }
     }, []);
 
@@ -80,8 +83,8 @@ export const ListItem: React.FC = () => {
         detailRef?.current?.close();
     }, []);
 
-    const onRemoveItemFromList = useCallback((item: ExpenseItem) => {
-        const removed = ExpenseService.remove(item);
+    const onRemoveItemFromList = useCallback(async (item: ExpenseItem) => {
+        const removed = await ExpenseService.remove(item);
         if (removed) {
             Alert.alert("Delete", "Deletado com sucesso");
             getAllExpenseItems();
@@ -90,6 +93,85 @@ export const ListItem: React.FC = () => {
             Alert.alert("Delete", "Erro ao deletar");
         }
     }, []);
+
+    const onFinishItem = useCallback(async (item: ExpenseItem) => {
+        item.finished = true;
+        const updated = await ExpenseService.update(item);
+        if (updated) getAllExpenseItems();
+    }, []);
+    const onAddErrorItem = useCallback(async (item: ExpenseItem) => {
+        item.hasError = true;
+        const updated = await ExpenseService.update(item);
+        if (updated) getAllExpenseItems();
+    }, []);
+
+    const [filterShowed, setFilterShowed] = useState(false);
+    const handleShowFilter = useCallback(() => {
+        setFilterShowed(prev => !prev);
+    }, []);
+
+    const filterHeight = useSharedValue(0);
+    const filterDisplay = useSharedValue<number | "none" | "flex">("none");
+    const filterStyles = useAnimatedStyle(() => ({
+        display: filterDisplay.value,
+        height: withTiming(filterHeight.value, {
+            duration: 600, easing: Constants.BEZIER
+        }),
+        width: "100%",
+        marginBottom: 16
+    }));
+    useEffect(() => {
+        if (filterShowed) {
+            filterHeight.value = 40;
+            filterDisplay.value = "flex";
+        } else {
+            filterHeight.value = 0;
+            setTimeout(() => {
+                filterDisplay.value = "none";
+            }, 500);
+        }
+    }, [filterShowed]);
+
+    const [searchText, setSearchText] = useState("");
+    const [filterFinished, setFilterFinished] = useState(false);
+    const [filterError, setFilterError] = useState(false);
+
+    const onChangeSearchText = useCallback((value: string) => {
+        setSearchText(value);
+        if (!value.trim()) {
+            setItems(rootItems);
+            return;
+        } else {
+            setItems(
+                rootItems.filter(item =>
+                    item?.title.toLowerCase().includes(value.toLowerCase()) ||
+                    item?.description.toLowerCase().includes(value.toLowerCase()) ||
+                    ("finished".includes(value.toLowerCase()) && item.finished) ||
+                    ("error".includes(value.toLowerCase()) && item.hasError) ||
+                    item?.comment.toLowerCase().includes(value.toLowerCase()) ||
+                    item?.createdAt?.toString().toLowerCase().includes(value.toLowerCase()) ||
+                    item?.updatedAt?.toString().toLowerCase().includes(value.toLowerCase()) ||
+                    item?.when?.toString().toLowerCase().includes(value.toLowerCase())
+                )
+            );
+        }
+    }, [rootItems]);
+
+    useEffect(() => {
+        // if (!searchText.trim() && !filterFinished && !filterError) {
+        //     setItems(rootItems);
+        // }
+        // if (!searchText.trim() && (filterFinished || filterError)) {
+        //     setItems(
+        //         rootItems.filter(item => {
+        //             if (filterFinished && filterError) return !!(item.finished && item.hasError);
+        //             if (filterFinished) return !!(item.finished);
+        //             if (filterError) return !!(item.hasError);
+        //             return false;
+        //         })
+        //     )
+        // }
+    }, [searchText, filterFinished, filterError]);
 
     return (
         <Container>
@@ -116,10 +198,44 @@ export const ListItem: React.FC = () => {
                     </Label>
                 </HeaderContent>
 
-                <Button empty onPress={onAddNewItemToList}>
-                    <PlusIcon />
+                <Button empty onPress={handleShowFilter}>
+                    <FilterIndicatorIcon name={filterShowed ? "arrow-circle-up" : "arrow-circle-down"} />
                 </Button>
             </Header>
+
+            <Animated.View style={filterStyles}>
+                <SearchInput
+                    placeholder="Digite algo para buscar"
+                    value={searchText}
+                    onChangeText={onChangeSearchText}
+                />
+                <Box direction="row" style={{ marginTop: 4, marginLeft: 8 }}>
+                    <Checker
+                        label="Finalizado"
+                        labelProps={{
+                            type: "SMALL",
+                            color: "TEXT"
+                        }}
+                        direction="row"
+                        first="check"
+                        checked={filterFinished}
+                        onPress={() => setFilterFinished(prev => !prev)}
+                    />
+                    <Checker
+                        label="Houve problema"
+                        labelProps={{
+                            type: "SMALL",
+                            color: "TEXT"
+                        }}
+                        direction="row"
+                        first="check"
+                        checked={filterError}
+                        error={filterError}
+                        onPress={() => setFilterError(prev => !prev)}
+                    />
+                </Box>
+
+            </Animated.View>
 
             {fetchingItems && <Loading />}
             <EachItemList
@@ -128,9 +244,18 @@ export const ListItem: React.FC = () => {
                 renderItem={({ item }) => (
                     <EachItem
                         data={item}
-                        onSelectItem={onSelectItemFromList}
-                        onRemoveItem={onRemoveItemFromList}
+                        actions={{
+                            onSelect: onSelectItemFromList,
+                            onRemove: onRemoveItemFromList,
+                            onAddError: onAddErrorItem,
+                            onFinish: onFinishItem
+                        }}
                     />
+                )}
+                ListEmptyComponent={() => (
+                    <View>
+                        <Text>Registros não encontrados</Text>
+                    </View>
                 )}
             />
         </Container>
