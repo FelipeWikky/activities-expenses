@@ -1,10 +1,10 @@
-import Storage from "./storage";
+import {LocalStorage as Storage} from "./storage";
 
 export interface AbstractInterface<T> {
-    create(data: T): Promise<boolean>;
-    update(data: T): Promise<boolean>;
+    create(data: T): Promise<T | boolean>;
+    update(data: T): Promise<T | boolean | null>;
     remove(data: T): Promise<boolean>;
-    get(id: keyof T): Promise<T | null | undefined>;
+    get(id: keyof T): Promise<T | null>;
     getAll(): Promise<T[]>;
 }
 
