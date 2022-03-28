@@ -11,6 +11,12 @@ export type CheckerProps = {
 
 export type ItemProps = {
     data: ExpenseItem;
-    onSelectItem?: (item: ExpenseItem) => void;
-    onRemoveItem?: (item: ExpenseItem) => void;
+    actions?: ItemActions;
+}
+
+export type ItemActions = {
+    onSelect?: (item: ExpenseItem) => void;
+    onRemove?: (item: ExpenseItem) => void;
+    onAddError?: (item: ExpenseItem) => void;
+    onFinish?: (item: ExpenseItem) => void;
 }

@@ -13,25 +13,31 @@ import { ItemProps } from "./types";
 import { useCallback, useMemo, useRef } from "react";
 import { Box } from '../../../layout/Box';
 
-export const EachItem: React.FC<ItemProps> = ({ data, onSelectItem, onRemoveItem }) => {
+export const EachItem: React.FC<ItemProps> = ({ data, actions }) => {
     const ref = useRef<Swipeable>(null);
 
     const LeftActions = useMemo(() => {
         const buttons: JSX.Element[] = [];
         if (!data.hasError) {
             buttons.push(
-                <RemoveButton key={`error-${data.id}`} onPress={() => {
-                    ref?.current?.close();
-                }}>
+                <RemoveButton key={`error-${data.id}`}
+                    onPress={() => {
+                        actions?.onAddError(data);
+                        ref?.current?.close();
+                    }}
+                >
                     <MaterialIcons name="error" size={18} color="white" />
                 </RemoveButton>
             )
         }
         if (!data.finished) {
             buttons.push(
-                <FinishButton key={`finish-${data.id}`} onPress={() => {
-                    ref?.current?.close();
-                }}>
+                <FinishButton key={`finish-${data.id}`}
+                    onPress={() => {
+                        actions?.onFinish(data)
+                        ref?.current?.close();
+                    }}
+                >
                     <AntDesign name="checkcircle" size={18} color="white" />
                 </FinishButton>
             );
@@ -49,7 +55,7 @@ export const EachItem: React.FC<ItemProps> = ({ data, onSelectItem, onRemoveItem
     const RightIcons = useMemo(() => {
         return (
             <RemoveButton onPress={() => {
-                if (onRemoveItem && data) onRemoveItem(data);
+                actions?.onRemove(data);
                 ref?.current?.close();
             }}>
                 <FontAwesome5 name="trash" size={18} color="white" />
@@ -85,13 +91,12 @@ export const EachItem: React.FC<ItemProps> = ({ data, onSelectItem, onRemoveItem
                 <DetailsButton
                     activeOpacity={0.5}
                     onPress={() => {
-                        if (onSelectItem) onSelectItem(data);
+                        if (actions?.onSelect) actions.onSelect(data);
                     }}
                 >
                     <Title finished={data.finished}>
-                        {data.title}
+                        #{data?.id} - {data.title}
                     </Title>
-
 
                     <Description finished={data.finished}>
                         {data.description}

@@ -8,7 +8,7 @@ export const Container = styled.View`
     border-top-width: 1px;
     border-bottom-width: 1px;
     border-style: solid;
-    border-color: ${({ theme }) => theme.SHADOW[3]};
+    border-color: ${({ theme }) => theme.COLORS.TEXT_LOW};
     margin-bottom: 12px;
     width: 100%;
     position: relative;
@@ -43,26 +43,20 @@ export const FinishButton = styled(Button).attrs(props => ({
     background-color: ${({ theme }) => theme.COLORS.SUCCESS}
 `;
 
-export const Title = styled.Text.attrs(props => ({numberOfLines: 1}))<TextProps>`
+export const Title = styled.Text.attrs(props => ({ numberOfLines: 1 })) <TextProps>`
     padding: 2px 2px 4px;
     text-decoration: ${({ finished }) => finished ? "line-through" : ""};
     font-family: ${({ theme }) => theme.FONTS.MEDIUM};
     font-size: ${({ theme }) => theme.SIZE.NORMAL_SMALL}px;
+    color:${({ theme }) => theme.COLORS.TEXT};
 `;
 
-export const Description = styled.Text.attrs(props => ({numberOfLines: 1}))<TextProps>`
+export const Description = styled.Text.attrs(props => ({ numberOfLines: 1 })) <TextProps>`
     padding: 4px 2px 2px;
     text-decoration: ${({ finished }) => finished ? "line-through" : ""};
     font-size: ${({ theme }) => theme.SIZE.SMALL}px;
-    /* max-width: 80%; */
     max-height: 20px;
-`;
-
-export const Line = styled.View`
-    height: 1px;
-    width: 95%;
-    background-color: ${({ theme }) => theme.SHADOW[1]};
-    align-self: center;
+    color:${({ theme }) => theme.COLORS.TEXT};
 `;
 
 export const Checker = styled.View<CheckerProps>`
@@ -80,5 +74,5 @@ export const CreatedAt = styled.Text<TextProps>`
     padding: 4px 2px 2px;
     align-self: flex-end;
     font-size: ${({ theme }) => theme.SIZE.SMALL}px;
-    color: ${({ theme }) => theme.SHADOW[4]}
+    color: ${({ theme }) => theme.COLORS.TEXT_LOW}
 `;
