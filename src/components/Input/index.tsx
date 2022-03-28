@@ -86,7 +86,7 @@ export const Input: React.FC<InputProps> = ({ control, name, label, error, right
                         return (
                             <StyledInput
                                 value={value}
-                                placeholder={(filled || focused) ? placeholder : ""}
+                                placeholder={(focused) ? placeholder : ""}
                                 secureTextEntry={!showPassword}
                                 onFocus={onFocus}
                                 onBlur={onBlur}
