@@ -35,6 +35,10 @@ export const THEME = {
          */
         TEXT: 'rgba(70, 88, 105, 1)',
         /**
+         * Color for the texts with low strong
+         */
+         TEXT_LOW: 'rgba(70, 88, 105, 0.5)',
+        /**
          * Label color for inputs
          */
         LABEL: 'rgba(48, 140, 219, 1)',
