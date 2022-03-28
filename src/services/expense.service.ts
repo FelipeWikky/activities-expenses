@@ -1,52 +1,45 @@
 import { ExpenseItem } from "../types/models/expenseItem";
 import { AbstractInterface } from "./abstract.service";
-import Storage from "./storage";
+import { SqliteStorage } from "./storage";
 
-const KEY = "FOLLOW_EXPENSES_DATA";
+const TABLE_NAME = "expenses";
 
 class ExpenseServiceClass implements AbstractInterface<ExpenseItem> {
+    repository: SqliteStorage;
+    constructor() {
+        this.repository = new SqliteStorage(TABLE_NAME);
+    }
+
     async create(expenseItem: ExpenseItem) {
-        let savedItems = await Storage.getAllItems<ExpenseItem>(KEY);
-        if (!savedItems) savedItems = [];
-        savedItems.push({
+        const length = await this.repository.count();
+        const newItem = {
             ...expenseItem,
-            id: savedItems.length + 1,
+            id: (Number(length) || 0) + 1,
             createdAt: new Date(),
             updatedAt: new Date()
-        });
-        return await Storage.setItem(KEY, savedItems);
+        } as ExpenseItem;
+        return await this.repository.insert<ExpenseItem>(String(newItem.id), newItem);
     }
 
     async getAll() {
-        return await Storage.getAllItems<ExpenseItem>(KEY);
+        return await this.repository.getAll<ExpenseItem>();
     }
 
     async remove(data: ExpenseItem) {
-        let savedItems = await Storage.getAllItems<ExpenseItem>(KEY);
-        if (data.id) {
-            savedItems = savedItems.filter(item => String(item?.id) !== String(data?.id));
-        } else {
-            savedItems = savedItems.filter(item => String(item.title) !== String(data.title) && String(item.description) !== String(data.description));
-        }
-        return await Storage.setItem(KEY, savedItems);
+        return await this.repository.delete<ExpenseItem>(String(data.id));
     }
 
     async get(id: string): Promise<ExpenseItem> {
-        const allItems = await Storage.getAllItems<ExpenseItem>(KEY);
-        return allItems.find(item => String(id) === String(item.id));
+        return await this.repository.get<ExpenseItem>(id)
     }
 
-    async update(data: ExpenseItem): Promise<boolean> {
-        let savedItems = await Storage.getAllItems<ExpenseItem>(KEY);
-        const index = savedItems.findIndex(item => String(item.id) === String(data.id));
-        if(index > -1) {
-            savedItems[index] = {
-                ...data,
-                updatedAt: new Date()
-            };
-            return await Storage.setItem(KEY, savedItems);
-        }
-        return false;
+    async update(data: ExpenseItem) {
+        data.updatedAt = new Date();
+        return await this.repository.update<ExpenseItem>(String(data?.id), data);
+    }
+
+    async getWithFilter({ error, finished, search }: ExpenseFilter) {
+        const query = `SELECT * FROM ${TABLE_NAME}`
     }
 }
 
@@ -54,4 +47,10 @@ const ExpenseService = new ExpenseServiceClass();
 
 export {
     ExpenseService
+}
+
+type ExpenseFilter = {
+    finished?: boolean;
+    error?: boolean;
+    search?: string;
 }
