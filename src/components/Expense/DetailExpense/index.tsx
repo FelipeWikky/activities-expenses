@@ -52,6 +52,9 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
             for (const key of Object.keys(data)) {
                 setValue(key as any, data[key]);
             }
+        } else {
+            setValue("finished", false);
+            setValue("hasError", false);
         }
     }, [data]);
 
@@ -85,7 +88,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
     const resetFields = () => {
         reset({
-            id: '', title: '', description: '', comment: '', finished: false, hasError: false, createdAt: '', when: ''
+            id: '', title: '', description: '', comment: '', finished: false, hasError: false, createdAt: '', whenAt: ''
         });
     }
 
@@ -154,7 +157,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     <Line shadow={2} marginVertical={12} />
 
                     <Box>
-                        <DatePicker type="datetime" name="when" control={control} label="Para quando?" />
+                        <DatePicker type="datetime" name="whenAt" control={control} label="Para quando?" />
                     </Box>
 
                     <Line shadow={2} marginVertical={12} />
