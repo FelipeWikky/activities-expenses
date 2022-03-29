@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Animated, { withTiming, useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 
-import { 
-    Container, Loading, EachItemList, Header, HeaderContent, PlusIcon, 
-    FilterIndicatorIcon, SearchInput, Ticker } from "./styles";
+import {
+    Container, Loading, EachItemList, Header, HeaderContent, PlusIcon,
+    FilterIndicatorIcon
+} from "./styles";
 
 import { ExpenseItem } from "../../../types/models/expenseItem";
 import { EachItem } from "../EachItem";
@@ -15,8 +16,7 @@ import { ExpenseService } from "../../../services/expense.service";
 import { Alert, Text, View } from "react-native";
 import { sortByDate } from "../../../utils/sort";
 import { Constants } from "../../../utils/constants";
-import { Box } from "../../../layout/Box";
-import { Checker } from "../../Checker";
+import { FilterList } from "../FilterList";
 
 export const ListItem: React.FC = () => {
     const [rootItems, setRootItems] = useState<ExpenseItem[]>([]);
@@ -135,6 +135,7 @@ export const ListItem: React.FC = () => {
     const [searchText, setSearchText] = useState("");
     const [filterFinished, setFilterFinished] = useState(false);
     const [filterError, setFilterError] = useState(false);
+    const [filterWhenAt, setFilterWhenAt] = useState(false);
 
     const onChangeSearchText = useCallback((value: string) => {
         setSearchText(value);
@@ -151,27 +152,28 @@ export const ListItem: React.FC = () => {
                     item?.comment.toLowerCase().includes(value.toLowerCase()) ||
                     item?.createdAt?.toString().toLowerCase().includes(value.toLowerCase()) ||
                     item?.updatedAt?.toString().toLowerCase().includes(value.toLowerCase()) ||
-                    item?.when?.toString().toLowerCase().includes(value.toLowerCase())
+                    item?.whenAt?.toString().toLowerCase().includes(value.toLowerCase())
                 )
             );
         }
     }, [rootItems]);
 
     useEffect(() => {
-        // if (!searchText.trim() && !filterFinished && !filterError) {
-        //     setItems(rootItems);
-        // }
-        // if (!searchText.trim() && (filterFinished || filterError)) {
-        //     setItems(
-        //         rootItems.filter(item => {
-        //             if (filterFinished && filterError) return !!(item.finished && item.hasError);
-        //             if (filterFinished) return !!(item.finished);
-        //             if (filterError) return !!(item.hasError);
-        //             return false;
-        //         })
-        //     )
-        // }
-    }, [searchText, filterFinished, filterError]);
+        async function listWithQuery() {
+            if (!searchText.trim() && !filterFinished && !filterError && !filterWhenAt) {
+                getAllExpenseItems();
+            } else {
+                const filtereds = await ExpenseService.getWithFilter({
+                    search: searchText,
+                    finished: filterFinished,
+                    hasError: filterError,
+                    hasWhen: filterWhenAt
+                });
+                if (filtereds) setItems(filtereds);
+            }
+        }
+        listWithQuery();
+    }, [searchText, filterFinished, filterError, filterWhenAt]);
 
     return (
         <Container>
@@ -204,37 +206,9 @@ export const ListItem: React.FC = () => {
             </Header>
 
             <Animated.View style={filterStyles}>
-                <SearchInput
-                    placeholder="Digite algo para buscar"
-                    value={searchText}
-                    onChangeText={onChangeSearchText}
+                <FilterList 
+                    handleFilter={(key, value) => console.log(key, value)}
                 />
-                <Box direction="row" style={{ marginTop: 4, marginLeft: 8 }}>
-                    <Checker
-                        label="Finalizado"
-                        labelProps={{
-                            type: "SMALL",
-                            color: "TEXT"
-                        }}
-                        direction="row"
-                        first="check"
-                        checked={filterFinished}
-                        onPress={() => setFilterFinished(prev => !prev)}
-                    />
-                    <Checker
-                        label="Houve problema"
-                        labelProps={{
-                            type: "SMALL",
-                            color: "TEXT"
-                        }}
-                        direction="row"
-                        first="check"
-                        checked={filterError}
-                        error={filterError}
-                        onPress={() => setFilterError(prev => !prev)}
-                    />
-                </Box>
-
             </Animated.View>
 
             {fetchingItems && <Loading />}
