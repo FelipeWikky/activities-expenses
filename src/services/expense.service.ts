@@ -36,8 +36,36 @@ class ExpenseServiceClass implements AbstractInterface<ExpenseItem> {
         return await this.repository.update<ExpenseItem>(String(data?.id), data);
     }
 
-    async getWithFilter({ error, finished, search }: ExpenseFilter) {
-        const query = `SELECT * FROM ${TABLE_NAME}`
+    async getWithFilter({ search, finished, hasError, hasWhen}: ExpenseFilter): Promise<ExpenseItem[]> {
+        let query = `SELECT * FROM ${TABLE_NAME}`;
+        let hasBefore = false;
+        if(search.trim() || finished || hasError || hasWhen) 
+            query += ` WHERE `
+        if(search.trim()) {
+            query += `(title LIKE "%${search}%" OR description LIKE "%${search}%" OR comment LIKE "%${search}%" OR createdAt LIKE "%${search}%" OR updatedAt LIKE "%${search}%" whenAt LIKE "%${search}%")`;
+            hasBefore = true;
+        }
+        if(finished) {
+            query += `${hasBefore ? " AND " : " "} (finished = 1)`;
+            hasBefore = true;
+        }
+        if(hasError) {
+            query += `${hasBefore ? " AND " : " "} (hasError = 1)`;
+            hasBefore = true;
+        }
+        if(hasWhen) {
+            query += `${hasBefore ? " AND " : " "} (whenAt IS NOT NULL AND whenAt <> "")`;
+            hasBefore = true;
+        }
+
+        const select = await this.repository.custom(query, []);
+        const filtereds: ExpenseItem[] = [];
+        if(select) {
+            for(let i = 0; i < select.length; i++) {
+                filtereds.push(select.item(i));
+            }
+        }
+        return filtereds;
     }
 }
 
@@ -47,8 +75,10 @@ export {
     ExpenseService
 }
 
-type ExpenseFilter = {
-    finished?: boolean;
-    error?: boolean;
+export type ExpenseFilter = {
     search?: string;
+    finished?: boolean;
+    hasError?: boolean;
+    hasWhen?: boolean;
+    isPending?: boolean;
 }
