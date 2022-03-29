@@ -1,6 +1,6 @@
 import { ExpenseItem } from "../types/models/expenseItem";
 import { AbstractInterface } from "./abstract.service";
-import { SqliteStorage } from "./storage";
+import { SqliteStorage } from "./storage/sqlite";
 
 const TABLE_NAME = "expenses";
 
@@ -11,14 +11,12 @@ class ExpenseServiceClass implements AbstractInterface<ExpenseItem> {
     }
 
     async create(expenseItem: ExpenseItem) {
-        const length = await this.repository.count();
         const newItem = {
             ...expenseItem,
-            id: (Number(length) || 0) + 1,
             createdAt: new Date(),
             updatedAt: new Date()
         } as ExpenseItem;
-        return await this.repository.insert<ExpenseItem>(String(newItem.id), newItem);
+        return await this.repository.insert<ExpenseItem>(newItem);
     }
 
     async getAll() {

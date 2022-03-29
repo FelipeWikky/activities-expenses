@@ -1,4 +1,4 @@
-import {LocalStorage as Storage} from "./storage";
+import { LocalStorage as Storage } from "./storage/local";
 
 export interface AbstractInterface<T> {
     create(data: T): Promise<T | boolean>;
