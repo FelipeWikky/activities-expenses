@@ -1,3 +1,4 @@
+import { THEME } from "../../theme";
 import { LabelProps } from "../Label/types";
 
 export type CheckerProps = {
@@ -11,5 +12,7 @@ export type CheckerProps = {
     labelProps?: LabelProps;
 
     direction?: "row" | "column";
-    first?: "check" | "label"
+    first?: "check" | "label";
+
+    fillColor?: keyof typeof THEME.COLORS;
 }
