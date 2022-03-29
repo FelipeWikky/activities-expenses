@@ -19,6 +19,7 @@ export const DetailsButton = styled.TouchableOpacity`
     justify-content: space-between;
     padding: 8px 4px;
     min-height: 76px;
+    position: relative;
 `;
 
 export const SwipableButton = styled(Swipeable)`
@@ -59,6 +60,13 @@ export const Description = styled.Text.attrs(props => ({ numberOfLines: 1 })) <T
     color:${({ theme }) => theme.COLORS.TEXT};
 `;
 
+export const CreatedAt = styled.Text<TextProps>`
+    padding: 4px 2px 2px;
+    align-self: flex-end;
+    font-size: ${({ theme }) => theme.SIZE.SMALL}px;
+    color: ${({ theme }) => theme.COLORS.TEXT_LOW}
+`;
+
 export const Checker = styled.View<CheckerProps>`
     height: 16px;
     width: 16px;
@@ -68,11 +76,4 @@ export const Checker = styled.View<CheckerProps>`
     background-color: ${({ checked, error }) => error ? "red" : checked ? "green" : "transparent"};
     right: 4px;
     top: 4px;
-`;
-
-export const CreatedAt = styled.Text<TextProps>`
-    padding: 4px 2px 2px;
-    align-self: flex-end;
-    font-size: ${({ theme }) => theme.SIZE.SMALL}px;
-    color: ${({ theme }) => theme.COLORS.TEXT_LOW}
 `;

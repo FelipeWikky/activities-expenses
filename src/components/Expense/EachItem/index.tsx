@@ -94,6 +94,8 @@ export const EachItem: React.FC<ItemProps> = ({ data, actions }) => {
                         if (actions?.onSelect) actions.onSelect(data);
                     }}
                 >
+                    <Checker checked={data.finished} error={data.hasError} />
+
                     <Title finished={data.finished}>
                         #{data?.id} - {data.title}
                     </Title>
@@ -104,14 +106,13 @@ export const EachItem: React.FC<ItemProps> = ({ data, actions }) => {
 
                     <Box direction='row' justifyContent='space-between'>
                         <CreatedAt>
-                            Quando? {formatDateTime(data?.when)}
+                            Quando? {formatDateTime(data?.whenAt)}
                         </CreatedAt>
                         <CreatedAt>
                             {renderUpdatedAt() ? "Atualizado em " + renderUpdatedAt() : "Criado em " + renderCreatedAt()}
                         </CreatedAt>
                     </Box>
 
-                    <Checker checked={data.finished} error={data.hasError} />
                 </DetailsButton>
             </SwipableButton>
         </Container>
