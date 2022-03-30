@@ -12,13 +12,17 @@ import { Label } from "../../Label";
 import { formatDate } from "../../../utils/format";
 import { DetailExpense, DetailExpenseHandles } from "../DetailExpense";
 import { Button } from "../../Button";
-import { ExpenseService } from "../../../services/expense.service";
+import { ExpenseFilter, ExpenseService } from "../../../services/expense.service";
 import { Alert, Text, View } from "react-native";
 import { sortByDate } from "../../../utils/sort";
 import { Constants } from "../../../utils/constants";
 import { FilterList } from "../FilterList";
+import { isEmpty } from "../../../utils";
+import { useToast } from "../../../hooks/useToast";
 
 export const ListItem: React.FC = () => {
+    const toast = useToast();
+
     const [rootItems, setRootItems] = useState<ExpenseItem[]>([]);
     const [items, setItems] = useState<ExpenseItem[]>([]);
     const [itemSelected, setItemSelected] = useState<ExpenseItem>();
@@ -58,7 +62,6 @@ export const ListItem: React.FC = () => {
     const onCreateExpenseItem = useCallback(async (item: ExpenseItem) => {
         const saved = await ExpenseService.create(item);
         if (saved) {
-            Alert.alert("Criação", "Criado com sucesso");
             detailRef?.current?.close();
             getAllExpenseItems();
         }
@@ -69,7 +72,7 @@ export const ListItem: React.FC = () => {
     const onUpdateExpenseItem = useCallback(async (item: ExpenseItem) => {
         const saved = await ExpenseService.update(item);
         if (saved) {
-            Alert.alert("Atualização", "Atualizado com sucesso");
+            toast.show("Atualizado com sucesso", "success");
             detailRef?.current?.close();
             getAllExpenseItems();
         }
@@ -86,7 +89,6 @@ export const ListItem: React.FC = () => {
     const onRemoveItemFromList = useCallback(async (item: ExpenseItem) => {
         const removed = await ExpenseService.remove(item);
         if (removed) {
-            Alert.alert("Delete", "Deletado com sucesso");
             getAllExpenseItems();
         }
         else {
@@ -106,9 +108,7 @@ export const ListItem: React.FC = () => {
     }, []);
 
     const [filterShowed, setFilterShowed] = useState(false);
-    const handleShowFilter = useCallback(() => {
-        setFilterShowed(prev => !prev);
-    }, []);
+    const handleShowFilter = useCallback(() => setFilterShowed(prev => !prev), []);
 
     const filterHeight = useSharedValue(0);
     const filterDisplay = useSharedValue<number | "none" | "flex">("none");
@@ -132,48 +132,19 @@ export const ListItem: React.FC = () => {
         }
     }, [filterShowed]);
 
-    const [searchText, setSearchText] = useState("");
-    const [filterFinished, setFilterFinished] = useState(false);
-    const [filterError, setFilterError] = useState(false);
-    const [filterWhenAt, setFilterWhenAt] = useState(false);
-
-    const onChangeSearchText = useCallback((value: string) => {
-        setSearchText(value);
-        if (!value.trim()) {
-            setItems(rootItems);
-            return;
-        } else {
-            setItems(
-                rootItems.filter(item =>
-                    item?.title.toLowerCase().includes(value.toLowerCase()) ||
-                    item?.description.toLowerCase().includes(value.toLowerCase()) ||
-                    ("finished".includes(value.toLowerCase()) && item.finished) ||
-                    ("error".includes(value.toLowerCase()) && item.hasError) ||
-                    item?.comment.toLowerCase().includes(value.toLowerCase()) ||
-                    item?.createdAt?.toString().toLowerCase().includes(value.toLowerCase()) ||
-                    item?.updatedAt?.toString().toLowerCase().includes(value.toLowerCase()) ||
-                    item?.whenAt?.toString().toLowerCase().includes(value.toLowerCase())
-                )
-            );
-        }
-    }, [rootItems]);
+    const [filters, setFilters] = useState<ExpenseFilter>({} as ExpenseFilter);
 
     useEffect(() => {
         async function listWithQuery() {
-            if (!searchText.trim() && !filterFinished && !filterError && !filterWhenAt) {
+            if (!filters || isEmpty(filters)) {
                 getAllExpenseItems();
             } else {
-                const filtereds = await ExpenseService.getWithFilter({
-                    search: searchText,
-                    finished: filterFinished,
-                    hasError: filterError,
-                    hasWhen: filterWhenAt
-                });
+                const filtereds = await ExpenseService.getWithFilter(filters);
                 if (filtereds) setItems(filtereds);
             }
         }
         listWithQuery();
-    }, [searchText, filterFinished, filterError, filterWhenAt]);
+    }, [filters]);
 
     return (
         <Container>
@@ -206,8 +177,8 @@ export const ListItem: React.FC = () => {
             </Header>
 
             <Animated.View style={filterStyles}>
-                <FilterList 
-                    handleFilter={(key, value) => console.log(key, value)}
+                <FilterList
+                    handleFilter={setFilters}
                 />
             </Animated.View>
 
