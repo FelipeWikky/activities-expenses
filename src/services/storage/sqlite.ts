@@ -11,10 +11,9 @@ class SqliteStorage {
                     `CREATE TABLE IF NOT EXISTS ${TABLE} (id INTEGER PRIMARY KEY, title TEXT, description TEXT, finished BOOLEAN, hasError BOOLEAN, comment TEXT, createdAt TEXT, updatedAt TEXT, whenAt TEXT)`,
                     [],
                     (_, result) => {
-                        console.log('execute ok ')
                     },
                     (_, error) => {
-                        console.log('erro on execute ', error);
+                        console.error('erro on execute ', error);
                         return false;
                     }
                 )
@@ -106,6 +105,7 @@ class SqliteStorage {
                 const values: any[] = [];
                 for (const key of keys) {
                     if (data[key] instanceof Date) {
+                        // values.push((new Date(data[key])).toISOString());
                         values.push(String(data[key]));
                     }
                     else if (data[key] !== null && data[key] !== undefined) {
@@ -121,11 +121,10 @@ class SqliteStorage {
                     query,
                     values,
                     (_, result) => {
-                        console.log('insert ok ', result)
                         resolve(data)
                     },
                     (_, error) => {
-                        console.log('error on insert ', error);
+                        console.error('error on insert ', error);
                         return false;
                     }
                 )
@@ -189,6 +188,7 @@ class SqliteStorage {
                         resolve(result.rows)
                     },
                     (_, error) => {
+                        console.error("error on custom ", error);
                         reject(null);
                         return false;
                     }

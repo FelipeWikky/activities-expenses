@@ -5,67 +5,66 @@ import { ExpenseFilter } from "../../../services/expense.service";
 import { SearchInput, FilterChecker } from "./styles";
 
 type FilterListProps = {
-    handleFilter: (key: keyof ExpenseFilter, newVale: string | boolean) => void;
+    handleFilter: (filters: ExpenseFilter) => void;
 }
 
 export const FilterList: React.FC<FilterListProps> = ({ handleFilter }) => {
-    const [search, setSearch] = useState("");
-    const [finished, setFinished] = useState(false);
-    const [error, setError] = useState(false);
-    const [whenAt, setWhenAt] = useState(false);
-    const [pending, setPending] = useState(false);
+    const [filters, setFilters] = useState<ExpenseFilter>({
+        finished: false,
+        error: false,
+        whenAt: false,
+        pending: false,
+        search: ""
+    });
 
     const onChangeFilter = useCallback((key: keyof ExpenseFilter, newValue: string | boolean) => {
+        let obj = {...filters};
+
         switch (key) {
-            case "finished":
-                setFinished(!!(newValue));
-                break;
-            case "hasError":
-                setError(!!(newValue));
-                break;
-            case "hasWhen":
-                setWhenAt(!!(newValue));
-                break;
-            case "isPending":
-                setPending(!!(newValue));
-                break;
             case "search":
-                setSearch(String(newValue));
+                obj = { ...obj, [key]: String(newValue) };
+                setFilters(obj);
+                // setFilters(prev => ({ ...prev, [key]: String(newValue) }));
+                break;
+            default:
+                obj = { ...obj, [key]: !!(newValue) };
+                setFilters(obj);
+                // setFilters(prev => ({ ...prev, [key]: !!(newValue) }));
                 break;
         }
-        handleFilter(key, newValue);
-    }, []);
+        handleFilter(obj);
+    }, [filters]);
 
     return (
         <>
             <SearchInput
                 placeholder="Digite algo para buscar"
-                value={search}
+                value={filters.search}
                 onChangeText={text => onChangeFilter("search", text)}
             />
             <Box direction="row" style={{ marginTop: 4, marginLeft: 8 }}>
                 <FilterChecker
+                    label="Pendente"
+                    checked={filters.pending}
+                    fillColor="TEXT"
+                    onPress={() => onChangeFilter("pending", !filters.pending)}
+                />
+                <FilterChecker
                     label="Finalizado"
-                    checked={finished}
-                    onPress={() => onChangeFilter("finished", !finished)}
+                    checked={filters.finished}
+                    onPress={() => onChangeFilter("finished", !filters.finished)}
                 />
                 <FilterChecker
                     label="Problema"
-                    checked={error}
+                    checked={filters.error}
                     fillColor="DANGER"
-                    onPress={() => onChangeFilter("hasError", !error)}
-                />
-                <FilterChecker
-                    label="Pendente"
-                    checked={pending}
-                    fillColor="TEXT"
-                    onPress={() => onChangeFilter("isPending", !pending)}
+                    onPress={() => onChangeFilter("error", !filters.error)}
                 />
                 <FilterChecker
                     label="Possui quando?"
-                    checked={whenAt}
+                    checked={filters.whenAt}
                     fillColor="LABEL"
-                    onPress={() => onChangeFilter("hasWhen", !whenAt)}
+                    onPress={() => onChangeFilter("whenAt", !filters.whenAt)}
                 />
             </Box>
         </>
