@@ -7,7 +7,7 @@ import { CheckerProps } from "./types";
 export const StyledChecker = styled.View<CheckerProps>`
     height: 16px;
     width: 16px;
-    position: ${({ absolute }) => absolute ? "absolute" : "absolute"};
+    position: ${({ absolute }) => !!(absolute) ? "absolute" : "relative"};
     border-radius: 10px;
     border: 1px solid ${({fillColor, checked, error, theme }) =>
         (fillColor && checked) ? theme.COLORS[fillColor] :
