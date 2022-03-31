@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 import { Box } from "../../../layout/Box";
 import { ExpenseFilter } from "../../../services/expense.service";
 
@@ -9,6 +10,8 @@ type FilterListProps = {
 }
 
 export const FilterList: React.FC<FilterListProps> = ({ handleFilter }) => {
+    const {t} = useTranslation();
+
     const [filters, setFilters] = useState<ExpenseFilter>({
         finished: false,
         error: false,
@@ -24,12 +27,10 @@ export const FilterList: React.FC<FilterListProps> = ({ handleFilter }) => {
             case "search":
                 obj = { ...obj, [key]: String(newValue) };
                 setFilters(obj);
-                // setFilters(prev => ({ ...prev, [key]: String(newValue) }));
                 break;
             default:
                 obj = { ...obj, [key]: !!(newValue) };
                 setFilters(obj);
-                // setFilters(prev => ({ ...prev, [key]: !!(newValue) }));
                 break;
         }
         handleFilter(obj);
@@ -38,30 +39,30 @@ export const FilterList: React.FC<FilterListProps> = ({ handleFilter }) => {
     return (
         <>
             <SearchInput
-                placeholder="Digite algo para buscar"
+                placeholder={t("label.placeholder.input.search")}
                 value={filters.search}
                 onChangeText={text => onChangeFilter("search", text)}
             />
             <Box direction="row" style={{ marginTop: 4, marginLeft: 8 }}>
                 <FilterChecker
-                    label="Pendente"
+                    label={t("label.pending")}
                     checked={filters.pending}
                     fillColor="TEXT"
                     onPress={() => onChangeFilter("pending", !filters.pending)}
                 />
                 <FilterChecker
-                    label="Finalizado"
+                    label={t("label.finished")}
                     checked={filters.finished}
                     onPress={() => onChangeFilter("finished", !filters.finished)}
                 />
                 <FilterChecker
-                    label="Problema"
+                    label={t("label.problem")}
                     checked={filters.error}
                     fillColor="DANGER"
                     onPress={() => onChangeFilter("error", !filters.error)}
                 />
                 <FilterChecker
-                    label="Possui quando?"
+                    label={t("label.have.when", "?")}
                     checked={filters.whenAt}
                     fillColor="LABEL"
                     onPress={() => onChangeFilter("whenAt", !filters.whenAt)}

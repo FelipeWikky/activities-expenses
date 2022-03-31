@@ -12,7 +12,6 @@ export const Content = styled.View`
 `;
 
 export const Title = styled.Text`
-    /* margin-top: 12px; */
     margin-bottom: 4px;
     font-size: ${({ theme }) => theme.SIZE.NORMAL_SMALL}px;
     font-family: ${({ theme }) => theme.FONTS.MEDIUM};

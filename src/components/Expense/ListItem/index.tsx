@@ -3,7 +3,7 @@ import Animated, { withTiming, useSharedValue, useAnimatedStyle } from "react-na
 
 import {
     Container, Loading, EachItemList, Header, HeaderContent, PlusIcon,
-    FilterIndicatorIcon
+    FilterIndicatorIcon, EmptyContainer, EmptyLabel
 } from "./styles";
 
 import { ExpenseItem } from "../../../types/models/expenseItem";
@@ -13,17 +13,18 @@ import { formatDate } from "../../../utils/format";
 import { DetailExpense, DetailExpenseHandles } from "../DetailExpense";
 import { Button } from "../../Button";
 import { ExpenseFilter, ExpenseService } from "../../../services/expense.service";
-import { Alert, Text, View } from "react-native";
 import { sortByDate } from "../../../utils/sort";
 import { Constants } from "../../../utils/constants";
 import { FilterList } from "../FilterList";
 import { isEmpty } from "../../../utils";
 import { useToast } from "../../../hooks/useToast";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export const ListItem: React.FC = () => {
     const toast = useToast();
+    const { t } = useTranslation();
 
-    const [rootItems, setRootItems] = useState<ExpenseItem[]>([]);
+    const [_, setRootItems] = useState<ExpenseItem[]>([]);
     const [items, setItems] = useState<ExpenseItem[]>([]);
     const [itemSelected, setItemSelected] = useState<ExpenseItem>();
     const [fetchingItems, setFetchingItems] = useState(false);
@@ -62,22 +63,23 @@ export const ListItem: React.FC = () => {
     const onCreateExpenseItem = useCallback(async (item: ExpenseItem) => {
         const saved = await ExpenseService.create(item);
         if (saved) {
+            toast.show(t("success.create"), toast.STATUS.SUCCESS);
             detailRef?.current?.close();
             getAllExpenseItems();
         }
         else {
-            Alert.alert("Criação", "Erro ao criar");
+            toast.show(t("error.create"), toast.STATUS.ERROR);
         }
     }, []);
     const onUpdateExpenseItem = useCallback(async (item: ExpenseItem) => {
         const saved = await ExpenseService.update(item);
         if (saved) {
-            toast.show("Atualizado com sucesso", "success");
+            toast.show(t("success.update"), toast.STATUS.SUCCESS);
             detailRef?.current?.close();
             getAllExpenseItems();
         }
         else {
-            Alert.alert("Atualização", "Erro ao Atualizado");
+            toast.show(t("error.update"), toast.STATUS.ERROR);
         }
     }, []);
 
@@ -89,10 +91,11 @@ export const ListItem: React.FC = () => {
     const onRemoveItemFromList = useCallback(async (item: ExpenseItem) => {
         const removed = await ExpenseService.remove(item);
         if (removed) {
+            toast.show(t("success.delete"), toast.STATUS.SUCCESS);
             getAllExpenseItems();
         }
         else {
-            Alert.alert("Delete", "Erro ao deletar");
+            toast.show(t("error.delete"), toast.STATUS.ERROR);
         }
     }, []);
 
@@ -164,7 +167,7 @@ export const ListItem: React.FC = () => {
 
                 <HeaderContent>
                     <Label type="SUB_TITLE">
-                        Atividade
+                        {t("label.activity")}
                     </Label>
                     <Label type="NORMAL_SMALL" style={{ marginBottom: 3 }}>
                         {" "} {formatDate(new Date())}
@@ -198,9 +201,9 @@ export const ListItem: React.FC = () => {
                     />
                 )}
                 ListEmptyComponent={() => (
-                    <View>
-                        <Text>Registros não encontrados</Text>
-                    </View>
+                    <EmptyContainer>
+                        <EmptyLabel>{t("label.list.empty")}</EmptyLabel>
+                    </EmptyContainer>
                 )}
             />
         </Container>

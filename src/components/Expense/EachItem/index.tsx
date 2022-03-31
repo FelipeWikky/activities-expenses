@@ -12,9 +12,11 @@ import {
 import { ItemProps } from "./types";
 import { useCallback, useMemo, useRef } from "react";
 import { Box } from '../../../layout/Box';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 export const EachItem: React.FC<ItemProps> = ({ data, actions }) => {
     const ref = useRef<Swipeable>(null);
+    const { t } = useTranslation();
 
     const LeftActions = useMemo(() => {
         const buttons: JSX.Element[] = [];
@@ -106,10 +108,10 @@ export const EachItem: React.FC<ItemProps> = ({ data, actions }) => {
 
                     <Box direction='row' justifyContent='space-between'>
                         <CreatedAt>
-                            Quando? {formatDateTime(data?.whenAt)}
+                        {t("label.when", "?")} {formatDateTime(data?.whenAt)}
                         </CreatedAt>
                         <CreatedAt>
-                            {renderUpdatedAt() ? "Atualizado em " + renderUpdatedAt() : "Criado em " + renderCreatedAt()}
+                            {renderUpdatedAt() ? t("label.updated.at", " ") + renderUpdatedAt() : t("label.created.at"," ") + renderCreatedAt()}
                         </CreatedAt>
                     </Box>
 

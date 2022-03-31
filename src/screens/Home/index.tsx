@@ -9,10 +9,13 @@ import { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-nati
 
 import { Button } from '../../components/Button';
 import { Signin, SigninHandles } from '../Signin';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const bezier = Easing.bezier(0.25, 0.1, 0.25, 1);
 
 const Home: React.FC = () => {
+    const { t } = useTranslation();
+
     const topHeader = useSharedValue(-150);
     const scaleHeader = useSharedValue(0.1);
     const scaleContent = useSharedValue(0.1);
@@ -65,6 +68,7 @@ const Home: React.FC = () => {
         <Container>
             <Signin ref={signinRef} />
 
+            {/* TODO: Inserir texto com o translation e rever nome do app */}
             <Header style={headerStyles}>
                 <Title>Follow</Title>
                 <SubTitle>expenses</SubTitle>
@@ -72,17 +76,17 @@ const Home: React.FC = () => {
             <Content style={contentStyles}>
 
                 <SigninContainer style={opacityStyles}>
-                    <Button text='Entrar' type='DEFAULT' onPress={onOpenSignin} />
+                    <Button text={t("label.signin")} type='DEFAULT' onPress={onOpenSignin} />
                 </SigninContainer>
 
                 <SigninContainer style={opacityStyles}>
-                    <Button text='Cadastrar' type='DEFAULT' />
+                    <Button text={t("label.signup")} type='DEFAULT' />
                 </SigninContainer>
 
             </Content>
 
             <Footer style={contentStyles}>
-                <Version>Versão 1.0.0</Version>
+                <Version>{t("label.version")} 1.0.0</Version>
             </Footer>
         </Container>
     );

@@ -18,6 +18,7 @@ import { getPercentageValue } from "../../../utils";
 import { formatDateTime } from "../../../utils/format";
 import { Input } from "../../Input";
 import { DatePicker } from "../../DatePicker";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 export type DetailExpenseHandles = {
     open: () => void;
@@ -33,15 +34,18 @@ type DetailExpenseProps = {
     onCloseModal?: () => void;
 }
 
-const schema = yup.object().shape({
-    title: yup.string().required("Este campo é obrigatório").min(3, "Mínimo de 3 caracteres"),
-    description: yup.string().required("Este campo é obrigatório").min(3, "Mínimo de 3 caracteres"),
-});
+
 
 const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandles, DetailExpenseProps> = ({ onlyView = true, onSave, onCancel, onCloseModal, data }, ref) => {
     const modalizeRef = useRef<Modalize>(null);
+    const { t } = useTranslation();
 
-    const { control, handleSubmit, setValue, reset, getValues, formState: { errors, } } = useForm<ExpenseItem>({
+    const schema = yup.object().shape({
+        title: yup.string().required(t("error.field.required")).min(3, t("error.field.character.minimum.3")),
+        description: yup.string().required(t("error.field.required")).min(3, t("error.field.character.minimum.3")),
+    });
+
+    const { control, handleSubmit, setValue, reset, formState: { errors, } } = useForm<ExpenseItem>({
         resolver: yupResolver(schema),
         defaultValues: data,
         shouldFocusError: true,
@@ -124,13 +128,17 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                 <Header showSave={!onlyView}>
                     {!onlyView && (
                         <Button
-                            type="SUCCESS" text={data?.id ? "Atualizar" : "Salvar"} textSize="NORMAL_SMALL"
+                            type="SUCCESS"
+                            text={data?.id ? t("label.update") :t("label.create")}
+                            textSize="NORMAL_SMALL"
                             onPress={handleSubmit(onSavePress)}
                         />
                     )}
                     {!!(idFormatted) && <Title>{idFormatted}</Title>}
                     <Button
-                        type="DANGER" text="Cancelar" textSize="NORMAL_SMALL"
+                        type="DANGER"
+                        text={t("label.cancel")}
+                        textSize="NORMAL_SMALL"
                         onPress={() => onCancelPress()}
                     />
                 </Header>
@@ -138,8 +146,9 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                 <Content>
                     <Box>
                         <Input
-                            control={control} type="text" name="title" label="Atividade"
-                            placeholder="Do que se trata esta atividade?"
+                            control={control} type="text" name="title" 
+                            label={t("label.activity")}
+                            placeholder={t("label.placeholder.activity.activity")}
                             error={errors?.title?.message}
                         />
                     </Box>
@@ -148,8 +157,9 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                     <Box>
                         <Input
-                            control={control} type="text" name="description" label="Descrição"
-                            placeholder="Uma breve descrição da atividade"
+                            control={control} type="text" name="description" 
+                            label={t("label.description")}
+                            placeholder={t("label.placeholder.activity.description")}
                             error={errors?.description?.message}
                         />
                     </Box>
@@ -157,16 +167,14 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     <Line shadow={2} marginVertical={12} />
 
                     <Box>
-                        <DatePicker type="datetime" name="whenAt" control={control} label="Para quando?" />
+                        <DatePicker type="datetime" name="whenAt" control={control} label={t("label.when.to", "?")} />
                     </Box>
 
                     <Line shadow={2} marginVertical={12} />
 
                     <Box direction="row" justifyContent="space-between">
                         <Box>
-                            <Title>
-                                Finalizado?
-                            </Title>
+                            <Title>{t("label.finished", "?")}</Title>
                             <Checkbox
                                 control={control}
                                 name="finished"
@@ -177,9 +185,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                             />
                         </Box>
                         <Box>
-                            <Title>
-                                Houve algum erro?
-                            </Title>
+                            <Title>{t("label.has.problem", "?")}</Title>
                             <Checkbox
                                 control={control}
                                 name="hasError"
@@ -195,8 +201,8 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                     <Box>
                         <Input
-                            control={control} type="text" name="comment" label="Comentário"
-                            placeholder="Algum comentário para este item?"
+                            control={control} type="text" name="comment" label={t("label.comment")}
+                            placeholder={t("label.placeholder.activity.comment")}
                             error={errors?.comment?.message}
                         />
                     </Box>
@@ -205,7 +211,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                     <Box direction="row" alignItems="center" justifyContent="space-between">
                         <Title>
-                            {!!(data && data.createdAt) ? "Criado em " : "Criando em"}
+                            {!!(data && data.createdAt) ? t("label.created.at"): t("label.created.at.in")}
                         </Title>
                         <Description style={{ marginBottom: 2 }}>
                             {formatDateTime(data?.createdAt || new Date())}
@@ -216,9 +222,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
 
                     {!createdAsSameUpdated && (
                         <Box direction="row" alignItems="center" justifyContent="space-between">
-                            <Title>
-                                Atualizado em
-                            </Title>
+                            <Title>{t("label.updated.at")}</Title>
                             <Description style={{ marginBottom: 2 }}>
                                 {formatDateTime(data?.updatedAt)}
                             </Description>

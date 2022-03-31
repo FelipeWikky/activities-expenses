@@ -1,19 +1,22 @@
 import { TranslateWord } from "../";
 
-export const en_AU:TranslateWord = {
+export const en_AU: TranslateWord = {
+    "label.go": "Go",
     "label.when": "When",
     "label.email": "Email",
     "label.signin": "Signin",
-    "label.password": "Passworn",
+    "label.password": "Password",
     "label.version": "Version",
     "label.delete": "Delete",
-    "label.creation": "Create",
+    "label.create": "Create",
     "label.pending": "Pending",
     "label.signup": "Signup",
     "label.problem": "Problem",
     "label.activity": "Activity",
+    "label.description": "Description",
     "label.finished": "Finished",
     "label.when.to": "For when",
+    "label.comment": "Comment",
     "label.created.at": "Created at",
     "label.have.when": "Have when",
     "label.created.at.in": "Creating in",
@@ -21,25 +24,25 @@ export const en_AU:TranslateWord = {
     "label.updated.at.in": "Updating in",
     "label.has.problem": "There was a problem",
     "label.list.empty": "No record found",
-    "label.activity.comment": "Any comments for this item",
-    
+
     "label.placeholder.signin.email": "Inform your email",
     "label.placeholder.signin.password": "Inform your password",
     "label.placeholder.input.search": "Type something to search ",
     "label.placeholder.activity.activity": "What is this activity about",
+    "label.placeholder.activity.comment": "Any comments for this item",
     "label.placeholder.activity.description": "A brief description of the activity",
 
-    "button.save": "Save",
-    "button.cancel": "Cancel",
-    "button.signin": "Login",
-    "button.update": "Update",
-    "button.signup": "Register",
-   
+    "label.save": "Save",
+    "label.cancel": "Cancel",
+    "label.update": "Update",
+
     "success.update": "Updated successfully",
     "success.delete": "Deleted successfully",
     "success.create": "Created successfully",
 
-    "error.creation": "An error occurred while creating",
+    "error.create": "An error occurred while creating",
     "error.delete": "An error occurred while deleting",
     "error.update": "An error occurred while updating",
+    "error.field.required": "This field is required",
+    "error.field.character.minimum.3": "Minimum of 3 characters",
 }

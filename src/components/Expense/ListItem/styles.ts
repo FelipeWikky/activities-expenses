@@ -6,8 +6,7 @@ import { ExpenseItem } from "../../../types/models/expenseItem";
 import { getColorByType } from "../../../utils/colors";
 import { Icon } from "../../Icon";
 import { Box } from "../../../layout/Box";
-import Animated from "react-native-reanimated";
-import { Button } from "../../Button";
+import { Label } from "../../Label";
 
 export const Container = styled.View`
     flex: 1;
@@ -75,4 +74,18 @@ export const Ticker = styled.Text`
     font-family: ${({theme}) => theme.FONTS.MEDIUM};
     font-size: ${({theme}) => theme.SIZE.SMALL}px;
     margin-right: 16px;
+`;
+
+export const EmptyContainer = styled(Box).attrs(props => ({
+    direction: "row",
+    justifyContent: "center"
+}))`
+    width: 100%;
+`;
+
+export const EmptyLabel = styled(Label).attrs(props => ({
+    type: "NORMAL_SMALL",
+    color: "TEXT"
+}))`
+    margin-top: 12px;
 `;

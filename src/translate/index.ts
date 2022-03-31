@@ -1,17 +1,20 @@
 
 
 export enum TRANSLATE_KEYS {
+    "label.go",
     "label.list.empty",
-    "button.save",
-    "button.update",
-    "button.cancel",
+    "label.save",
+    "label.update",
+    "label.cancel",
     "label.activity",
+    "label.description",
     "label.placeholder.activity.activity",
     "label.placeholder.activity.description",
+    "label.placeholder.activity.comment",
     "label.when.to",
     "label.finished",
     "label.has.problem",
-    "label.activity.comment",
+    "label.comment",
     "label.created.at.in",
     "label.created.at",
     "label.updated.at",
@@ -21,9 +24,9 @@ export enum TRANSLATE_KEYS {
     "label.pending",
     "label.problem",
     "label.have.when",
-    "label.creation",
+    "label.create",
     "success.create",
-    "error.creation",
+    "error.create",
     "success.update",
     "error.update",
     "error.delete",
@@ -35,11 +38,11 @@ export enum TRANSLATE_KEYS {
     "label.password",
     "label.placeholder.signin.email",
     "label.placeholder.signin.password",
-    "button.signin",
     "label.delete",
-    "button.signup"
+    "error.field.required",
+    "error.field.character.minimum.3"
 }
 
 export type TranslateWord = {
-    [key in keyof typeof TRANSLATE_KEYS]?: string;
+    [key in keyof typeof TRANSLATE_KEYS]: string;
 }

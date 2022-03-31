@@ -1,6 +1,5 @@
 import { StyleProp, TextStyle } from "react-native";
 import { THEME } from "../../theme";
-import { Ionicons, FontAwesome, FontAwesome5, AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
 
 export enum IconGroup {
     Ionicons,
