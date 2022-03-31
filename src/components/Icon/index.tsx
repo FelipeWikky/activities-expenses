@@ -1,4 +1,6 @@
 import React from "react";
+/// <reference path="https://icons.expo.fyi/" />
+
 import {
     Ionicons,
     FontAwesome,
@@ -14,7 +16,7 @@ import { THEME } from "../../theme";
 const getIconComponentByProps = (
     group: keyof typeof IconGroup,
     name: any,
-    color: string,
+    color = THEME.COLORS.INPUT_ICON,
     size: number,
     style?: any
 ) => {
@@ -37,6 +39,6 @@ const getIconComponentByProps = (
     }
 }
 
-export const Icon: React.FC<IconProps> = ({ group, name, color = THEME.COLORS.INPUT_ICON, size = 24, style }) => {
-    return getIconComponentByProps(group, name, color, size, style);
+export const Icon: React.FC<IconProps> = ({ group, name, customColor, color, size = 24, style }) => {
+    return getIconComponentByProps(group, name, customColor ? customColor : THEME.COLORS[color], size, style);
 }

@@ -15,6 +15,7 @@ export type IconProps = {
     name: string;
     group: keyof typeof IconGroup;
     size?: number;
-    color?: keyof typeof THEME.COLORS | string;
+    color?: keyof typeof THEME.COLORS;
+    customColor?: string;
     style?: StyleProp<TextStyle>;
 }
