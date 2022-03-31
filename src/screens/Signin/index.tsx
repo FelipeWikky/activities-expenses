@@ -1,11 +1,15 @@
 import { useRef, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useCallback, useMemo, useState } from "react";
 import { Dimensions } from "react-native";
 import { Modalize } from "react-native-modalize";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { Modal, Container, InputContainer } from "./styles";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { getPercentageValue } from "../../utils";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export interface SigninHandles {
     openModal: () => void;
@@ -16,11 +20,21 @@ type SigninProps = {}
 
 type Input = {
     email?: string;
-    pwd?: string;
+    password?: string;
 }
 
 const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_, ref) => {
     const modalizeRef = useRef<Modalize>(null);
+    const { t } = useTranslation();
+
+    const schema = yup.object().shape({
+        email: yup.string().email().required(t("error.field.required")).typeError(t("error.field.required")),
+        password: yup.string().min(3, t("error.field.character.minimum.3")).typeError(t("error.field.required"))
+    })
+
+    const { control, handleSubmit, formState: { errors } } = useForm<Input>({
+        resolver: yupResolver(schema)
+    });
 
     const [input, setInput] = useState<Input>({});
 
@@ -57,30 +71,28 @@ const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_
             <Container>
                 <InputContainer>
                     <Input
+                        control={control}
                         name="email"
-                        label="E-mail"
-                        error={!(input?.email) && "Email obrigatório"}
-                        leftIcon={"user"}
-                        placeholder={'Informe seu E-mail'}
-                        value={input?.email}
-                        onChangeText={onChangeText}
+                        label={t("label.email")}
+                        error={errors.email?.message}
+                        // leftIcon={"user"}
+                        placeholder={t("label.placeholder.signin.email")}
                     />
                 </InputContainer>
 
                 <InputContainer>
                     <Input
-                        name="pwd"
-                        label="Password"
-                        error={!(input?.pwd) && "Senha obrigatória"}
+                        control={control}
+                        name="password"
+                        label={t("label.password")}
+                        error={errors.password?.message}
                         type="password"
-                        leftIcon={"lock"}
-                        placeholder={'Informe sua Senha'}
-                        value={input?.pwd}
-                        onChangeText={onChangeText}
+                        // leftIcon={"lock"}
+                        placeholder={t("label.placeholder.signin.password")}
                     />
                 </InputContainer>
 
-                <Button type="DEFAULT" text="Fazer login" size="md" />
+                <Button type="DEFAULT" text={t("label.go")} />
             </Container>
         </Modal>
     );
