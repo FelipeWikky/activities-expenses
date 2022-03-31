@@ -8,6 +8,13 @@ export enum TOAST_ID {
     WARNING = "WARNING",
 }
 
+export enum STATUS {
+    INFO = "info",
+    WARNING = "warning",
+    SUCCESS = "success",
+    ERROR = "error"
+}
+
 export const useToast = () => {
     const toast = useToastNB();
 
@@ -20,6 +27,7 @@ export const useToast = () => {
     }
 
     return {
-        show
+        show,
+        STATUS
     }
 }
