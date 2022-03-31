@@ -18,7 +18,7 @@ import { Constants } from "../../../utils/constants";
 import { FilterList } from "../FilterList";
 import { isEmpty } from "../../../utils";
 import { useToast } from "../../../hooks/useToast";
-import { useTranslation } from "../../../hooks/useTranslation";
+import { useTranslation } from "../../../contexts/translation/useTranslation";
 
 export const ListItem: React.FC = () => {
     const toast = useToast();

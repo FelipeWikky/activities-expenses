@@ -18,7 +18,7 @@ import { getPercentageValue } from "../../../utils";
 import { formatDateTime } from "../../../utils/format";
 import { Input } from "../../Input";
 import { DatePicker } from "../../DatePicker";
-import { useTranslation } from "../../../hooks/useTranslation";
+import { useTranslation } from "../../../contexts/translation/useTranslation";
 
 export type DetailExpenseHandles = {
     open: () => void;

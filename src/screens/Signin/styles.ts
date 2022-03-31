@@ -12,5 +12,5 @@ export const Container = styled.View`
 `;
 
 export const InputContainer = styled.View`
-    margin-bottom: 8px;
+    margin-bottom: 24px;
 `;

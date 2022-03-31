@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { useTranslation } from "../../../hooks/useTranslation";
+import { useTranslation } from "../../../contexts/translation/useTranslation";
 import { Box } from "../../../layout/Box";
 import { ExpenseFilter } from "../../../services/expense.service";
 

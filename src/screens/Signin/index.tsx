@@ -9,7 +9,7 @@ import { Modal, Container, InputContainer } from "./styles";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { getPercentageValue } from "../../utils";
-import { useTranslation } from "../../hooks/useTranslation";
+import { useTranslation } from "../../contexts/translation/useTranslation";
 
 export interface SigninHandles {
     openModal: () => void;

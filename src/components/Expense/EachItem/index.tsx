@@ -12,7 +12,7 @@ import {
 import { ItemProps } from "./types";
 import { useCallback, useMemo, useRef } from "react";
 import { Box } from '../../../layout/Box';
-import { useTranslation } from '../../../hooks/useTranslation';
+import { useTranslation } from '../../../contexts/translation/useTranslation';
 
 export const EachItem: React.FC<ItemProps> = ({ data, actions }) => {
     const ref = useRef<Swipeable>(null);
