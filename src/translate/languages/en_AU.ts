@@ -1,0 +1,45 @@
+import { TranslateWord } from "../";
+
+export const en_AU:TranslateWord = {
+    "label.when": "When",
+    "label.email": "Email",
+    "label.signin": "Signin",
+    "label.password": "Passworn",
+    "label.version": "Version",
+    "label.delete": "Delete",
+    "label.creation": "Create",
+    "label.pending": "Pending",
+    "label.signup": "Signup",
+    "label.problem": "Problem",
+    "label.activity": "Activity",
+    "label.finished": "Finished",
+    "label.when.to": "For when",
+    "label.created.at": "Created at",
+    "label.have.when": "Have when",
+    "label.created.at.in": "Creating in",
+    "label.updated.at": "Updated at",
+    "label.updated.at.in": "Updating in",
+    "label.has.problem": "There was a problem",
+    "label.list.empty": "No record found",
+    "label.activity.comment": "Any comments for this item",
+    
+    "label.placeholder.signin.email": "Inform your email",
+    "label.placeholder.signin.password": "Inform your password",
+    "label.placeholder.input.search": "Type something to search ",
+    "label.placeholder.activity.activity": "What is this activity about",
+    "label.placeholder.activity.description": "A brief description of the activity",
+
+    "button.save": "Save",
+    "button.cancel": "Cancel",
+    "button.signin": "Login",
+    "button.update": "Update",
+    "button.signup": "Register",
+   
+    "success.update": "Updated successfully",
+    "success.delete": "Deleted successfully",
+    "success.create": "Created successfully",
+
+    "error.creation": "An error occurred while creating",
+    "error.delete": "An error occurred while deleting",
+    "error.update": "An error occurred while updating",
+}
