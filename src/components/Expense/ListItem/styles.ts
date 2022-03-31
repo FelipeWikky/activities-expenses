@@ -14,13 +14,6 @@ export const Container = styled.View`
     align-items: center;
 `;
 
-export const Loading = styled.ActivityIndicator.attrs(props => ({
-    size: 'large',
-    color: props.theme.COLORS.LABEL,
-}))`
-    margin: 4px 0px;
-`;
-
 export const Header = styled.View`
     flex-direction: row;
     width: 100%;

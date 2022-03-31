@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import Animated, { withTiming, useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 
 import {
-    Container, Loading, EachItemList, Header, HeaderContent, PlusIcon,
+    Container, EachItemList, Header, HeaderContent, PlusIcon,
     FilterIndicatorIcon, EmptyContainer, EmptyLabel
 } from "./styles";
 
@@ -19,6 +19,7 @@ import { FilterList } from "../FilterList";
 import { isEmpty } from "../../../utils";
 import { useToast } from "../../../hooks/useToast";
 import { useTranslation } from "../../../contexts/translation/useTranslation";
+import { Loading } from "../../Loading";
 
 export const ListItem: React.FC = () => {
     const toast = useToast();
