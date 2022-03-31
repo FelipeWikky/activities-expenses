@@ -16,7 +16,9 @@ class LocalStorageClass {
     async getItem<T>(key: string): Promise<T | null> {
         try {
             const stringfied = await AsyncStorage.getItem(key);
-            return JSON.parse(stringfied) as T;
+            if (stringfied && stringfied.length > 0)
+                return JSON.parse(stringfied) as T;
+            return null;
         } catch (error) {
             console.error('Error on Storage.getItem: ', error);
             return null;
