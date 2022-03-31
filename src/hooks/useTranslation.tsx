@@ -10,8 +10,8 @@ export const LANGUAGES = {
 export const useTranslation = () => {
     const [languageSelected, setLanguageSelected] = useState<keyof typeof LANGUAGES>("en_AU");
 
-    const translate = useCallback((key: keyof typeof TRANSLATE_KEYS) => {
-        return LANGUAGES[languageSelected][key];
+    const translate = useCallback((key: keyof typeof TRANSLATE_KEYS, extraText?: string) => {
+        return `${LANGUAGES[languageSelected][key]}${extraText ? extraText : ""}`;
     }, [languageSelected]);
 
     const cangeLanguage = useCallback((language: keyof typeof LANGUAGES) => {
@@ -19,6 +19,7 @@ export const useTranslation = () => {
     }, []);
 
     return {
+        t: translate,
         translate,
         cangeLanguage
     }
