@@ -16,6 +16,7 @@ export const en_US: TranslateWord = {
     "label.description": "Description",
     "label.finished": "Finished",
     "label.when.to": "For when",
+    "label.welcome": "Welcome",
     "label.comment": "Comment",
     "label.created.at": "Created at",
     "label.have.when": "Have when",
@@ -25,6 +26,7 @@ export const en_US: TranslateWord = {
     "label.has.problem": "There was a problem",
     "label.list.empty": "No record found",
     "label.select.language": "Select a language",
+    "label.welcome.back": "Welcome back",
 
     "label.placeholder.signin.email": "Inform your email",
     "label.placeholder.signin.password": "Inform your password",

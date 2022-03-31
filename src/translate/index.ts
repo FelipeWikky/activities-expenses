@@ -1,7 +1,22 @@
 export { CountryCode } from "react-native-country-picker-modal";
 
-import { pt_BR } from "./languages/pt_BR"
-import { en_US } from "./languages/en_US"
+import { pt_BR } from "./languages/pt_BR";
+import { en_US } from "./languages/en_US";
+
+
+export type TranslateWord = {
+    [key in keyof typeof TRANSLATE_KEYS]: string;
+}
+
+export const LANGUAGES = {
+    pt_BR, en_US
+}
+
+export enum LANGUAGE_KEY {
+    pt_BR = "pt_BR", en_US = "en_US"
+}
+
+export type LanguageType = keyof typeof LANGUAGES;
 
 export enum TRANSLATE_KEYS {
     "label.go",
@@ -44,19 +59,7 @@ export enum TRANSLATE_KEYS {
     "label.delete",
     "error.field.required",
     "error.field.character.minimum.3",
-    "label.select.language"
+    "label.select.language",
+    "label.welcome",
+    "label.welcome.back",
 }
-
-export type TranslateWord = {
-    [key in keyof typeof TRANSLATE_KEYS]: string;
-}
-
-export const LANGUAGES = {
-    pt_BR, en_US
-}
-
-export enum LANGUAGE_KEY {
-    pt_BR = "pt_BR", en_US = "en_US"
-}
-
-export type LanguageType = keyof typeof LANGUAGES;
