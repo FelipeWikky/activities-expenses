@@ -10,8 +10,11 @@ import { Routes } from './src/routes';
 import { AuthProvider } from './src/contexts/auth';
 import { ExpenseProvider } from './src/contexts/expense';
 import { TranslationProvider } from './src/contexts/translation';
+import useColorScheme from './src/hooks/useColorScheme';
 
 export default function App() {
+  const colorScheme = useColorScheme();
+
   let [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_500Medium,
@@ -28,7 +31,7 @@ export default function App() {
         <AuthProvider >
           <TranslationProvider>
             <ExpenseProvider>
-              <Routes />
+              <Routes colorScheme={colorScheme} />
               <StatusBar style="auto" />
             </ExpenseProvider>
           </TranslationProvider>
