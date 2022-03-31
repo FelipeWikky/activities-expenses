@@ -9,12 +9,14 @@ import { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-nati
 
 import { Button } from '../../components/Button';
 import { Signin, SigninHandles } from '../Signin';
-import { useTranslation } from '../../hooks/useTranslation';
+import { useTranslation } from '../../contexts/translation/useTranslation';
+import { ChangeLanguage, ChangeLanguageHandles } from '../../components/ChangeLanguage';
+import { FlagButton } from '../../components/FlagButton';
 
 const bezier = Easing.bezier(0.25, 0.1, 0.25, 1);
 
 const Home: React.FC = () => {
-    const { t } = useTranslation();
+    const { t, countryCode } = useTranslation();
 
     const topHeader = useSharedValue(-150);
     const scaleHeader = useSharedValue(0.1);
@@ -64,9 +66,13 @@ const Home: React.FC = () => {
         signinRef.current.openModal();
     }, [signinRef]);
 
+    const changeLanguageRef = useRef<ChangeLanguageHandles>(null);
+
     return (
         <Container>
             <Signin ref={signinRef} />
+
+            <ChangeLanguage ref={changeLanguageRef} />
 
             {/* TODO: Inserir texto com o translation e rever nome do app */}
             <Header style={headerStyles}>
@@ -86,6 +92,7 @@ const Home: React.FC = () => {
             </Content>
 
             <Footer style={contentStyles}>
+                <FlagButton countryCode={countryCode} onPress={() => changeLanguageRef.current?.open()} />
                 <Version>{t("label.version")} 1.0.0</Version>
             </Footer>
         </Container>

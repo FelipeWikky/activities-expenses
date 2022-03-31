@@ -57,8 +57,7 @@ export const SigninText = styled.Text`
 `;
 
 export const Footer = styled(Animated.View)`
-  align-items: flex-start;
-  flex-direction: row;
+  align-items: center;
   margin-bottom: 10%;
 `;
 
@@ -66,5 +65,6 @@ export const Version = styled(Animated.Text)`
   color: ${({ theme }) => theme.COLORS.TEXT};
   font-family: ${({ theme }) => theme.FONTS.MEDIUM};
   font-size: ${({ theme }) => theme.SIZE.SMALL}px;
+  margin-top: 16px;
 `;
 
