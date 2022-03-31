@@ -10,6 +10,10 @@ import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { getPercentageValue } from "../../utils";
 import { useTranslation } from "../../contexts/translation/useTranslation";
+import { useNavigation } from "@react-navigation/native";
+import { LocalStorage } from "../../services/storage/local";
+import { Constants } from "../../utils/constants";
+import { Loading } from "../../components/Loading";
 
 export interface SigninHandles {
     openModal: () => void;
@@ -26,17 +30,19 @@ type Input = {
 const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_, ref) => {
     const modalizeRef = useRef<Modalize>(null);
     const { t } = useTranslation();
+    const navigation = useNavigation();
+
+    const [loadingSignin, setLoadingSignin] = useState(false);
 
     const schema = yup.object().shape({
-        email: yup.string().email().required(t("error.field.required")).typeError(t("error.field.required")),
-        password: yup.string().min(3, t("error.field.character.minimum.3")).typeError(t("error.field.required"))
+        // email: yup.string().email().required(t("error.field.required")).typeError(t("error.field.required")),
+        email: yup.string().required(t("error.field.required")).typeError(t("error.field.required")),
+        password: yup.string().required(t("error.field.required")).min(3, t("error.field.character.minimum.3")).typeError(t("error.field.required"))
     })
 
     const { control, handleSubmit, formState: { errors } } = useForm<Input>({
         resolver: yupResolver(schema)
     });
-
-    const [input, setInput] = useState<Input>({});
 
     const openModal = useCallback(() => {
         modalizeRef.current.open();
@@ -53,8 +59,17 @@ const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_
 
     const MODAL_HEIGHT = useMemo(() => getPercentageValue(Dimensions.get('window').height, 20), [Dimensions]);
 
-    const onChangeText = useCallback((attribute: string, value: string) => {
-        setInput(prev => ({ ...prev, [attribute]: value }));
+    const onSignin = useCallback(async (data: Input) => {
+        setLoadingSignin(true);
+        setTimeout(() => {
+            LocalStorage.setItem(Constants.STORAGE.AUTH, data)
+                .then(() => {
+                    navigation.navigate("Main")
+                })
+                .finally(() => {
+                    setLoadingSignin(false);
+                })
+        }, 2500);
     }, []);
 
     return (
@@ -69,6 +84,7 @@ const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_
             modalHeight={MODAL_HEIGHT}
         >
             <Container>
+
                 <InputContainer>
                     <Input
                         control={control}
@@ -92,7 +108,8 @@ const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_
                     />
                 </InputContainer>
 
-                <Button type="DEFAULT" text={t("label.go")} />
+                {loadingSignin && <Loading />}
+                <Button disabled={loadingSignin} type="DEFAULT" text={t("label.go")} onPress={handleSubmit(onSignin)} />
             </Container>
         </Modal>
     );
