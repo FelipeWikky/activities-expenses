@@ -12,11 +12,18 @@ import { Signin, SigninHandles } from '../Signin';
 import { useTranslation } from '../../contexts/translation/useTranslation';
 import { ChangeLanguage, ChangeLanguageHandles } from '../../components/ChangeLanguage';
 import { FlagButton } from '../../components/FlagButton';
+import { LocalStorage } from '../../services/storage/local';
+import { Constants } from '../../utils/constants';
+import { User } from '../../types/models/user';
+import { useNavigation } from '@react-navigation/native';
+import { useToast } from '../../hooks/useToast';
 
 const bezier = Easing.bezier(0.25, 0.1, 0.25, 1);
 
 const Home: React.FC = () => {
     const { t, countryCode } = useTranslation();
+    const navigation = useNavigation();
+    const toast = useToast();
 
     const topHeader = useSharedValue(-150);
     const scaleHeader = useSharedValue(0.1);
@@ -62,8 +69,14 @@ const Home: React.FC = () => {
     }, []);
 
     const signinRef = useRef<SigninHandles>(null);
-    const onOpenSignin = useCallback(() => {
-        signinRef.current.openModal();
+    const onOpenSignin = useCallback(async () => {
+        const user = await LocalStorage.getItem<User>(Constants.STORAGE.AUTH);
+        if (user) {
+            navigation.navigate("Main");
+            toast.show(t("label.welcome.back"), toast.STATUS.INFO);
+        } else {
+            signinRef.current.openModal();
+        }
     }, [signinRef]);
 
     const changeLanguageRef = useRef<ChangeLanguageHandles>(null);
