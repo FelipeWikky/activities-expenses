@@ -1,6 +1,6 @@
-import { TranslateWord } from "../";
+import { TranslateWord } from "..";
 
-export const en_AU: TranslateWord = {
+export const en_US: TranslateWord = {
     "label.go": "Go",
     "label.when": "When",
     "label.email": "Email",
@@ -24,6 +24,7 @@ export const en_AU: TranslateWord = {
     "label.updated.at.in": "Updating in",
     "label.has.problem": "There was a problem",
     "label.list.empty": "No record found",
+    "label.select.language": "Select a language",
 
     "label.placeholder.signin.email": "Inform your email",
     "label.placeholder.signin.password": "Inform your password",

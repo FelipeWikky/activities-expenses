@@ -9,6 +9,7 @@ import { THEME } from './src/theme';
 import { Routes } from './src/routes';
 import { AuthProvider } from './src/contexts/auth';
 import { ExpenseProvider } from './src/contexts/expense';
+import { TranslationProvider } from './src/contexts/translation';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -25,10 +26,12 @@ export default function App() {
     <ThemeProvider theme={THEME}>
       <NativeBaseProvider>
         <AuthProvider >
-          <ExpenseProvider>
-            <Routes />
-            <StatusBar style="auto" />
-          </ExpenseProvider>
+          <TranslationProvider>
+            <ExpenseProvider>
+              <Routes />
+              <StatusBar style="auto" />
+            </ExpenseProvider>
+          </TranslationProvider>
         </AuthProvider>
       </NativeBaseProvider>
     </ThemeProvider>

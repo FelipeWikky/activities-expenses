@@ -27,6 +27,7 @@ export const pt_BR: TranslateWord = {
     "label.updated.at.in": "Atualizando em",
     "label.has.problem": "Houve algum problema",
     "label.list.empty": "Nenhum registro encontrado",
+    "label.select.language": "Selecione uma linguagem",
     
     
     "label.placeholder.signin.email": "Informe seu email",
