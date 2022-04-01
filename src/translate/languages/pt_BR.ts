@@ -2,16 +2,21 @@ import { TranslateWord } from "../";
 
 export const pt_BR: TranslateWord = {
     "label.go": "Ir",
+    "label.hello": "Olá",
+    "label.list": "Lista",
     "label.save": "Salvar",
     "label.when": "Quando",
     "label.email": "Email",
+    "label.signout": "Sair",
+    "label.diary": "Diário",
     "label.signin": "Entrar",
     "label.password": "Senha",
     "label.delete": "Deletar",
     "label.version": "Versão",
-    "label.cancel": "Cancelar",
-    "label.update": "Atualizar",
     "label.create": "Criação",
+    "label.cancel": "Cancelar",
+    "label.settings": "Ajustes",
+    "label.update": "Atualizar",
     "label.pending": "Pendente",
     "label.signup": "Cadastrar",
     "label.problem": "Problema",
@@ -28,10 +33,10 @@ export const pt_BR: TranslateWord = {
     "label.updated.at.in": "Atualizando em",
     "label.welcome.back": "Bemvindo de volta",
     "label.has.problem": "Houve algum problema",
+    "label.change.language": "Alterar linguagem",
     "label.list.empty": "Nenhum registro encontrado",
     "label.select.language": "Selecione uma linguagem",
-    
-    
+
     "label.placeholder.signin.email": "Informe seu email",
     "label.placeholder.signin.password": "Informe sua senha",
     "label.placeholder.input.search": "Digite algo para buscar",
@@ -39,8 +44,6 @@ export const pt_BR: TranslateWord = {
     "label.placeholder.activity.activity": "Do que se trata esta atividade",
     "label.placeholder.activity.description": "Uma breve descrição da atividade",
 
-   
-   
     "success.update": "Atualizado com sucesso",
     "success.delete": "Deletado com sucesso",
     "success.create": "Criado com sucesso",

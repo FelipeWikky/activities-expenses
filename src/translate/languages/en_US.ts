@@ -27,6 +27,12 @@ export const en_US: TranslateWord = {
     "label.list.empty": "No record found",
     "label.select.language": "Select a language",
     "label.welcome.back": "Welcome back",
+    "label.list": "List",
+    "label.diary": "Diary",
+    "label.settings": "Settings",
+    "label.hello": "Hello",
+    "label.change.language": "Change language",
+    "label.signout": "Signout",
 
     "label.placeholder.signin.email": "Inform your email",
     "label.placeholder.signin.password": "Inform your password",
