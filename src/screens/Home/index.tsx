@@ -20,7 +20,7 @@ import { useToast } from '../../hooks/useToast';
 
 const bezier = Easing.bezier(0.25, 0.1, 0.25, 1);
 
-const Home: React.FC = () => {
+export const Home: React.FC = () => {
     const { t, countryCode } = useTranslation();
     const navigation = useNavigation();
     const toast = useToast();
@@ -73,7 +73,7 @@ const Home: React.FC = () => {
         const user = await LocalStorage.getItem<User>(Constants.STORAGE.AUTH);
         if (user) {
             navigation.navigate("Main");
-            toast.show(t("label.welcome.back"), toast.STATUS.INFO);
+            // toast.show(t("label.welcome.back"), toast.STATUS.INFO);
         } else {
             signinRef.current.openModal();
         }
@@ -111,5 +111,3 @@ const Home: React.FC = () => {
         </Container>
     );
 }
-
-export default Home;
