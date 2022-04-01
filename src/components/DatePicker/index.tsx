@@ -1,7 +1,6 @@
 import { Controller, Control } from "react-hook-form";
 import { View } from "react-native";
 
-// import DateTimePicker from "react-native-modal-datetime-picker";
 import { useMemo, useState } from "react";
 import { formatDate, formatTime } from "../../utils/format";
 

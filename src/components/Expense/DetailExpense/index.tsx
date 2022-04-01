@@ -5,19 +5,11 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { Modal, Container, Content, Header, Title, Description } from "./styles";
-
-import { Box } from "../../../layout/Box";
-import { Line } from "../../../layout/Line";
+import { Modal, Container, Header, Title } from "./styles";
 
 import { Button } from "../../Button";
-import { Checkbox } from "../../Checkbox";
-
 import { ExpenseItem } from "../../../types/models/expenseItem";
 import { getPercentageValue } from "../../../utils";
-import { formatDateTime } from "../../../utils/format";
-import { Input } from "../../Input";
-import { DatePicker } from "../../DatePicker";
 import { useTranslation } from "../../../contexts/translation/useTranslation";
 import { ExpenseForm } from "../ExpenseForm";
 
@@ -123,7 +115,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     {!onlyView && (
                         <Button
                             type="SUCCESS"
-                            text={data?.id ? t("label.update") :t("label.create")}
+                            text={data?.id ? t("label.update") : t("label.create")}
                             textSize="NORMAL_SMALL"
                             onPress={handleSubmit(onSavePress)}
                         />
@@ -144,7 +136,7 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     updatedAt={data?.updatedAt}
                 />
 
-                
+
             </Container>
         </Modal >
     );
