@@ -40,7 +40,7 @@ const BottomTabRoutes = () => {
             screenOptions={{
                 tabBarActiveTintColor: THEME.COLORS.LABEL,
                 tabBarInactiveTintColor: THEME.COLORS.TEXT,
-                unmountOnBlur: true
+                // unmountOnBlur: true
             }}
         >
             <BottomTab.Screen
