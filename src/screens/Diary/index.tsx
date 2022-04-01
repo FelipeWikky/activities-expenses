@@ -15,11 +15,13 @@ import { Icon } from "../../components/Icon";
 import { Box } from "../../layout/Box";
 import { useExpense } from "../../contexts/expense/useExpense";
 
+const BACK_ITEM_POSITION_TO_INITIAL_MS = 100;
+const WAIT_TO_DRAG_ITEM_AGAIN_MS = 500;
+
 export const Diary: React.FC = () => {
     const { t } = useTranslation();
     const { items } = useExpense();
     const { control } = useForm<ExpenseItem>();
-
 
     const WIDTH = useMemo(() => Number(Dimensions.get("window").width) * 0.75, [Dimensions]);
     const scrollRef = useRef<ScrollView>(null);
@@ -33,13 +35,13 @@ export const Diary: React.FC = () => {
             setScrollPressed(items.length - 1);
             const x = ((WIDTH + 100) * ((items.length - 1) + 1));
             scrollRef.current?.scrollTo({ x, animated: true });
-            setItemPosition(0);
+            setTimeout(() => setItemPosition(0), BACK_ITEM_POSITION_TO_INITIAL_MS)
         }
         else {
             setScrollPressed(prev => prev - 1);
             const x = ((WIDTH + 100) * (scrollPressed - 1));
             scrollRef.current?.scrollTo({ x: x, animated: true });
-            setItemPosition(0);
+            setTimeout(() => setItemPosition(0), BACK_ITEM_POSITION_TO_INITIAL_MS)
 
         }
         setWaitingSecondsToScroll(true);
@@ -50,20 +52,20 @@ export const Diary: React.FC = () => {
         if (scrollPressed === items.length - 1) {
             setScrollPressed(0);
             scrollRef.current?.scrollTo({ x: 0, animated: true });
-            setItemPosition(0);
+            setTimeout(() => setItemPosition(0), BACK_ITEM_POSITION_TO_INITIAL_MS)
         }
         else {
             setScrollPressed(prev => prev + 1);
             const x = ((WIDTH + 100) * (scrollPressed + 1));
             scrollRef.current?.scrollTo({ x, animated: true });
-            setItemPosition(0);
+            setTimeout(() => setItemPosition(0), BACK_ITEM_POSITION_TO_INITIAL_MS)
         }
         setWaitingSecondsToScroll(true);
     }
 
     useEffect(() => {
         if (waitingSecondsToScroll) {
-            setTimeout(() => setWaitingSecondsToScroll(false), 500);
+            setTimeout(() => setWaitingSecondsToScroll(false), WAIT_TO_DRAG_ITEM_AGAIN_MS);
         }
     }, [waitingSecondsToScroll]);
 
@@ -89,22 +91,23 @@ export const Diary: React.FC = () => {
             <Content>
                 <Items innerRef={scrollRef} scrollEnabled={false}>
                     {items.map(item => (
+                        // TODO: entender pq ele ta dando essa trava quando vai fazer o drag
                         <PanGestureHandler
                             key={item.id}
                             onGestureEvent={event => {
                                 const translationX = event.nativeEvent.translationX;
-                                if (translationX > 100) onScrollToLeft();
-                                else if (translationX < -100) onScrollToRight();
+                                if (translationX > 150) onScrollToLeft();
+                                else if (translationX < -150) onScrollToRight();
                                 else setItemPosition(translationX * 0.8);
                             }}
                             onEnded={event => {
                                 const translationX = event.nativeEvent.translationX;
-                                if (translationX > 100) onScrollToLeft();
-                                else if (translationX < -100) onScrollToRight();
+                                if (translationX > 150) onScrollToLeft();
+                                else if (translationX < -150) onScrollToRight();
                                 else setItemPosition(0);
                             }}
                         >
-                            <Item style={{position: "relative", left: itemPosition}}>
+                            <Item style={{ position: "relative", left: itemPosition }}>
                                 <ExpenseForm
                                     control={control}
                                     viewData={item}
