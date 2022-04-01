@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { PanGestureHandler, GestureDetector, Gesture } from "react-native-gesture-handler";
 
 import { Container, Header, HeaderContent, Content, Item, Items } from "./styles";
 
@@ -25,40 +25,44 @@ export const Diary: React.FC = () => {
     const scrollRef = useRef<ScrollView>(null);
     const [scrollPressed, setScrollPressed] = useState(0);
     const [waitingSecondsToScroll, setWaitingSecondsToScroll] = useState(false);
+    const [itemPosition, setItemPosition] = useState(0);
 
-    const onScrollToDown = (pressedByButtom?: boolean) => {
+    const onScrollToLeft = (pressedByButtom?: boolean) => {
         if (waitingSecondsToScroll && !pressedByButtom) return;
         if (scrollPressed === 0) {
             setScrollPressed(items.length - 1);
             const x = ((WIDTH + 100) * ((items.length - 1) + 1));
             scrollRef.current?.scrollTo({ x, animated: true });
+            setItemPosition(0);
         }
         else {
             setScrollPressed(prev => prev - 1);
             const x = ((WIDTH + 100) * (scrollPressed - 1));
-
             scrollRef.current?.scrollTo({ x: x, animated: true });
+            setItemPosition(0);
+
         }
         setWaitingSecondsToScroll(true);
     }
 
-    const onScrollToUp = (pressedByButtom?: boolean) => {
+    const onScrollToRight = (pressedByButtom?: boolean) => {
         if (waitingSecondsToScroll && !pressedByButtom) return;
         if (scrollPressed === items.length - 1) {
             setScrollPressed(0);
             scrollRef.current?.scrollTo({ x: 0, animated: true });
+            setItemPosition(0);
         }
         else {
             setScrollPressed(prev => prev + 1);
             const x = ((WIDTH + 100) * (scrollPressed + 1));
-
             scrollRef.current?.scrollTo({ x, animated: true });
+            setItemPosition(0);
         }
         setWaitingSecondsToScroll(true);
     }
 
     useEffect(() => {
-        if(waitingSecondsToScroll) {
+        if (waitingSecondsToScroll) {
             setTimeout(() => setWaitingSecondsToScroll(false), 500);
         }
     }, [waitingSecondsToScroll]);
@@ -87,14 +91,20 @@ export const Diary: React.FC = () => {
                     {items.map(item => (
                         <PanGestureHandler
                             key={item.id}
-                            onGestureEvent={gesture => {
-                                const translationX = gesture.nativeEvent.translationX;
-                                if (translationX > 100) onScrollToDown();
-                                if (translationX < -100) onScrollToUp();
-
+                            onGestureEvent={event => {
+                                const translationX = event.nativeEvent.translationX;
+                                if (translationX > 100) onScrollToLeft();
+                                else if (translationX < -100) onScrollToRight();
+                                else setItemPosition(translationX * 0.8);
+                            }}
+                            onEnded={event => {
+                                const translationX = event.nativeEvent.translationX;
+                                if (translationX > 100) onScrollToLeft();
+                                else if (translationX < -100) onScrollToRight();
+                                else setItemPosition(0);
                             }}
                         >
-                            <Item>
+                            <Item style={{position: "relative", left: itemPosition}}>
                                 <ExpenseForm
                                     control={control}
                                     viewData={item}
@@ -108,13 +118,13 @@ export const Diary: React.FC = () => {
             </Content>
 
             <Box direction="row" alignItems="center" justifyContent="space-around" style={{ width: "100%", marginBottom: 32 }}>
-                <Button empty onPress={() => onScrollToDown(true)}>
+                <Button empty onPress={() => onScrollToLeft(true)}>
                     <Icon group="FontAwesome" name="arrow-circle-left" color="LABEL" size={36} />
                 </Button>
                 <Label color="LABEL" type="NORMAL">
                     {PaginationInfo}
                 </Label>
-                <Button empty onPress={() => onScrollToUp(true)}>
+                <Button empty onPress={() => onScrollToRight(true)}>
                     <Icon group="FontAwesome" name="arrow-circle-right" color="LABEL" size={36} />
                 </Button>
             </Box>
