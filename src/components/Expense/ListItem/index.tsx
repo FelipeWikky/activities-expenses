@@ -116,14 +116,16 @@ export const ListItem: React.FC = () => {
 
     const filterHeight = useSharedValue(0);
     const filterDisplay = useSharedValue<number | "none" | "flex">("none");
+    
     const filterStyles = useAnimatedStyle(() => ({
         display: filterDisplay.value,
         height: withTiming(filterHeight.value, {
-            duration: 600, easing: Constants.BEZIER
+            duration: 500, easing: Constants.BEZIER
         }),
         width: "100%",
         marginBottom: 16
     }));
+
     useEffect(() => {
         if (filterShowed) {
             filterHeight.value = 40;
@@ -132,7 +134,7 @@ export const ListItem: React.FC = () => {
             filterHeight.value = 0;
             setTimeout(() => {
                 filterDisplay.value = "none";
-            }, 500);
+            }, 350);
         }
     }, [filterShowed]);
 
