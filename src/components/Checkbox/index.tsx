@@ -18,7 +18,7 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
             control={control}
             render={({ field: { value, onChange, name } }) => {
                 return (
-                    <TouchableOpacity onPress={() => onChange(!value)}>
+                    <TouchableOpacity onPress={() => props?.editable ? onChange(!value) : {}}>
                         {showIcon
                             ? (
                                 <StyledCheckboxIcon
