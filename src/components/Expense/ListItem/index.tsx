@@ -20,30 +20,19 @@ import { isEmpty } from "../../../utils";
 import { useToast } from "../../../hooks/useToast";
 import { useTranslation } from "../../../contexts/translation/useTranslation";
 import { Loading } from "../../Loading";
+import { useExpense } from "../../../contexts/expense/useExpense";
 
 export const ListItem: React.FC = () => {
     const toast = useToast();
     const { t } = useTranslation();
+    const { items: expenseItems, loadingItems, onRefetchItems } = useExpense();
 
-    const [_, setRootItems] = useState<ExpenseItem[]>([]);
     const [items, setItems] = useState<ExpenseItem[]>([]);
     const [itemSelected, setItemSelected] = useState<ExpenseItem>();
-    const [fetchingItems, setFetchingItems] = useState(false);
-
-    const getAllExpenseItems = useCallback(async () => {
-        setItems([]);
-        setFetchingItems(true);
-        const expenseItems = await ExpenseService.getAll();
-        if (expenseItems) {
-            setItems(expenseItems);
-            setRootItems(expenseItems);
-            setFetchingItems(false);
-        }
-    }, []);
 
     useEffect(() => {
-        getAllExpenseItems();
-    }, []);
+        if(expenseItems) setItems(expenseItems);
+    }, [expenseItems]);
 
     const detailRef = useRef<DetailExpenseHandles>(null);
 
@@ -66,7 +55,7 @@ export const ListItem: React.FC = () => {
         if (saved) {
             toast.show(t("success.create"), toast.STATUS.SUCCESS);
             detailRef?.current?.close();
-            getAllExpenseItems();
+            onRefetchItems();
         }
         else {
             toast.show(t("error.create"), toast.STATUS.ERROR);
@@ -77,7 +66,7 @@ export const ListItem: React.FC = () => {
         if (saved) {
             toast.show(t("success.update"), toast.STATUS.SUCCESS);
             detailRef?.current?.close();
-            getAllExpenseItems();
+            onRefetchItems();
         }
         else {
             toast.show(t("error.update"), toast.STATUS.ERROR);
@@ -93,7 +82,7 @@ export const ListItem: React.FC = () => {
         const removed = await ExpenseService.remove(item);
         if (removed) {
             toast.show(t("success.delete"), toast.STATUS.SUCCESS);
-            getAllExpenseItems();
+            onRefetchItems();
         }
         else {
             toast.show(t("error.delete"), toast.STATUS.ERROR);
@@ -103,12 +92,12 @@ export const ListItem: React.FC = () => {
     const onFinishItem = useCallback(async (item: ExpenseItem) => {
         item.finished = true;
         const updated = await ExpenseService.update(item);
-        if (updated) getAllExpenseItems();
+        if (updated) onRefetchItems();
     }, []);
     const onAddErrorItem = useCallback(async (item: ExpenseItem) => {
         item.hasError = true;
         const updated = await ExpenseService.update(item);
-        if (updated) getAllExpenseItems();
+        if (updated) onRefetchItems();
     }, []);
 
     const [filterShowed, setFilterShowed] = useState(false);
@@ -116,7 +105,7 @@ export const ListItem: React.FC = () => {
 
     const filterHeight = useSharedValue(0);
     const filterDisplay = useSharedValue<number | "none" | "flex">("none");
-    
+
     const filterStyles = useAnimatedStyle(() => ({
         display: filterDisplay.value,
         height: withTiming(filterHeight.value, {
@@ -143,7 +132,7 @@ export const ListItem: React.FC = () => {
     useEffect(() => {
         async function listWithQuery() {
             if (!filters || isEmpty(filters)) {
-                getAllExpenseItems();
+                onRefetchItems();
             } else {
                 const filtereds = await ExpenseService.getWithFilter(filters);
                 if (filtereds) setItems(filtereds);
@@ -188,7 +177,7 @@ export const ListItem: React.FC = () => {
                 />
             </Animated.View>
 
-            {fetchingItems && <Loading />}
+            {loadingItems && <Loading />}
             <EachItemList
                 data={sortByDate<ExpenseItem>(items, 'updatedAt')}
                 keyExtractor={item => item.id ? item.id.toString() : item.title}

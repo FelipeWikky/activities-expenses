@@ -8,24 +8,20 @@ import { formatDate } from "../../utils/format";
 import { ExpenseForm } from "../../components/Expense/ExpenseForm";
 import { useForm } from "react-hook-form";
 import { ExpenseItem } from "../../types/models/expenseItem";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ExpenseService } from "../../services/expense.service";
 import { Dimensions, ScrollView } from "react-native";
 import { Button } from "../../components/Button";
 import { Icon } from "../../components/Icon";
 import { Box } from "../../layout/Box";
+import { useExpense } from "../../contexts/expense/useExpense";
 
 
 export const Diary: React.FC = () => {
     const { t } = useTranslation();
+    const { items } = useExpense();
+    const { control } = useForm<ExpenseItem>();
 
-    const { control, setValue, formState: { errors } } = useForm<ExpenseItem>();
-    const [items, setItems] = useState<ExpenseItem[]>([]);
-
-    useEffect(() => {
-        ExpenseService.getAll()
-            .then(items => setItems(items))
-    }, []);
 
     const WIDTH = useMemo(() => Number(Dimensions.get("window").width) * 0.75, [Dimensions]);
     const scrollRef = useRef<ScrollView>(null);
@@ -103,11 +99,6 @@ export const Diary: React.FC = () => {
                     <Icon group="FontAwesome" name="arrow-circle-right" color="LABEL" size={36} />
                 </Button>
             </Box>
-
-
-            <Footer>
-
-            </Footer>
         </Container>
     );
 }
