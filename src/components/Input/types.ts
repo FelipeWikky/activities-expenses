@@ -18,4 +18,8 @@ export type InputProps = Omit<TextInputProps, 'onChangeText'> & {
     rightIcon?: keyof typeof IconNames;
     type?: keyof typeof InputTypes;
     onChangeText?: (attribute: string, value: string) => void;
+    /**
+     * If send value on this property, not shown the input and show a label with this value
+     */
+    viewValue?: string;
 }

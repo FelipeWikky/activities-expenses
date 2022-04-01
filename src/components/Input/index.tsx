@@ -14,7 +14,7 @@ const getIconByProps = (name: keyof typeof IconNames, filled = false, size?: num
 
 const getPasswordEyeIcon = (name: any, action: () => void) => <IOIcon name={name} onPress={action} />;
 
-export const Input: React.FC<InputProps> = ({ control, name, label, error, rightIcon, leftIcon, onChangeText, placeholder, ...props }) => {
+export const Input: React.FC<InputProps> = ({ control, name, label, error, rightIcon, leftIcon, onChangeText, placeholder, viewValue, editable, ...props }) => {
 
     const inputRef = useRef<TextInput>(null);
     const [showPassword, setShowPassword] = useState(!(props.type === InputTypes.password));
@@ -23,8 +23,8 @@ export const Input: React.FC<InputProps> = ({ control, name, label, error, right
     const [focused, setFocused] = useState(false);
 
     useEffect(() => {
-        setFilled(props.value ? true : false)
-    }, [props.value]);
+        setFilled(viewValue ? true : props.value ? true : false)
+    }, [props.value, viewValue]);
     useEffect(() => {
         setFilled(props.value ? true : false)
     }, [control]);
@@ -60,14 +60,14 @@ export const Input: React.FC<InputProps> = ({ control, name, label, error, right
     }));
 
     useEffect(() => {
-        if (filled || focused) {
+        if (filled || focused || !!(viewValue)) {
             labelTopPosition.value = -2;
             labelLeftPosition.value = 0;
         } else {
             labelTopPosition.value = 18;
             labelLeftPosition.value = 8;
         }
-    }, [filled, focused]);
+    }, [filled, focused, viewValue]);
 
     return (
         <Container>
@@ -85,7 +85,7 @@ export const Input: React.FC<InputProps> = ({ control, name, label, error, right
                         if (value) setFilled(true);
                         return (
                             <StyledInput
-                                value={value}
+                                value={viewValue ? viewValue : value}
                                 placeholder={(focused) ? placeholder : ""}
                                 secureTextEntry={!showPassword}
                                 onFocus={onFocus}
@@ -94,6 +94,7 @@ export const Input: React.FC<InputProps> = ({ control, name, label, error, right
                                     setFilled(!!(text.trim()))
                                     onChange(text);
                                 }}
+                                editable={editable}
                             />
                         )
                     }}
