@@ -45,7 +45,7 @@ export const FilterIndicatorIcon = styled(Icon).attrs(props => ({
     group: "FontAwesome",
     name: props.name,
     size: props.theme.SIZE.SUB_TITLE,
-    color: props.theme.COLORS.LABEL
+    color: "LABEL"
 }))`
     padding: 0px 16px;
 `;
