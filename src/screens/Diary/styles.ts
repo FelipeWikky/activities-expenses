@@ -34,7 +34,6 @@ export const Items = styled.ScrollView.attrs<ItemRef>(props => ({
     showsHorizontalScrollIndicator: false,
     ref: props.innerRef
 }))<ItemRef>`
-      /* height: ${Number(Dimensions.get("window").height) - 200}px; */
       max-height: ${Number(Dimensions.get("window").height) * 0.60}px;
 `;
 
@@ -44,8 +43,4 @@ export const Item = styled.View`
     padding: 16px 12px;
     width: ${Number(Dimensions.get("window").width) * 0.75}px;
     margin: 0px 50px;
-`;
-
-export const Footer = styled.View`
-   
 `;

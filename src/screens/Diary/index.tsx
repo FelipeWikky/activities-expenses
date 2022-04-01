@@ -1,6 +1,7 @@
-import { Text } from "native-base";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { PanGestureHandler } from "react-native-gesture-handler";
 
-import { Container, Header, HeaderContent, Content, Footer, Item, Items } from "./styles";
+import { Container, Header, HeaderContent, Content, Item, Items } from "./styles";
 
 import { Label } from "../../components/Label";
 import { useTranslation } from "../../contexts/translation/useTranslation";
@@ -8,14 +9,11 @@ import { formatDate } from "../../utils/format";
 import { ExpenseForm } from "../../components/Expense/ExpenseForm";
 import { useForm } from "react-hook-form";
 import { ExpenseItem } from "../../types/models/expenseItem";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ExpenseService } from "../../services/expense.service";
 import { Dimensions, ScrollView } from "react-native";
 import { Button } from "../../components/Button";
 import { Icon } from "../../components/Icon";
 import { Box } from "../../layout/Box";
 import { useExpense } from "../../contexts/expense/useExpense";
-
 
 export const Diary: React.FC = () => {
     const { t } = useTranslation();
@@ -26,8 +24,10 @@ export const Diary: React.FC = () => {
     const WIDTH = useMemo(() => Number(Dimensions.get("window").width) * 0.75, [Dimensions]);
     const scrollRef = useRef<ScrollView>(null);
     const [scrollPressed, setScrollPressed] = useState(0);
+    const [waitingSecondsToScroll, setWaitingSecondsToScroll] = useState(false);
 
-    const onScrollToDown = () => {
+    const onScrollToDown = (pressedByButtom?: boolean) => {
+        if (waitingSecondsToScroll && !pressedByButtom) return;
         if (scrollPressed === 0) {
             setScrollPressed(items.length - 1);
             const x = ((WIDTH + 100) * ((items.length - 1) + 1));
@@ -39,9 +39,11 @@ export const Diary: React.FC = () => {
 
             scrollRef.current?.scrollTo({ x: x, animated: true });
         }
+        setWaitingSecondsToScroll(true);
     }
 
-    const onScrollToUp = () => {
+    const onScrollToUp = (pressedByButtom?: boolean) => {
+        if (waitingSecondsToScroll && !pressedByButtom) return;
         if (scrollPressed === items.length - 1) {
             setScrollPressed(0);
             scrollRef.current?.scrollTo({ x: 0, animated: true });
@@ -52,7 +54,14 @@ export const Diary: React.FC = () => {
 
             scrollRef.current?.scrollTo({ x, animated: true });
         }
+        setWaitingSecondsToScroll(true);
     }
+
+    useEffect(() => {
+        if(waitingSecondsToScroll) {
+            setTimeout(() => setWaitingSecondsToScroll(false), 500);
+        }
+    }, [waitingSecondsToScroll]);
 
     const PaginationInfo = useMemo(() => {
         if (!items || items.length === 0) return "";
@@ -76,26 +85,36 @@ export const Diary: React.FC = () => {
             <Content>
                 <Items innerRef={scrollRef} scrollEnabled={false}>
                     {items.map(item => (
-                        <Item key={item.id}>
-                            <ExpenseForm
-                                control={control}
-                                viewData={item}
-                                createdAt={item.createdAt}
-                                updatedAt={item.updatedAt}
-                            />
-                        </Item>
+                        <PanGestureHandler
+                            key={item.id}
+                            onGestureEvent={gesture => {
+                                const translationX = gesture.nativeEvent.translationX;
+                                if (translationX > 100) onScrollToDown();
+                                if (translationX < -100) onScrollToUp();
+
+                            }}
+                        >
+                            <Item>
+                                <ExpenseForm
+                                    control={control}
+                                    viewData={item}
+                                    createdAt={item.createdAt}
+                                    updatedAt={item.updatedAt}
+                                />
+                            </Item>
+                        </PanGestureHandler>
                     ))}
                 </Items>
             </Content>
 
             <Box direction="row" alignItems="center" justifyContent="space-around" style={{ width: "100%", marginBottom: 32 }}>
-                <Button empty onPress={onScrollToDown}>
+                <Button empty onPress={() => onScrollToDown(true)}>
                     <Icon group="FontAwesome" name="arrow-circle-left" color="LABEL" size={36} />
                 </Button>
                 <Label color="LABEL" type="NORMAL">
                     {PaginationInfo}
                 </Label>
-                <Button empty onPress={onScrollToUp}>
+                <Button empty onPress={() => onScrollToUp(true)}>
                     <Icon group="FontAwesome" name="arrow-circle-right" color="LABEL" size={36} />
                 </Button>
             </Box>
