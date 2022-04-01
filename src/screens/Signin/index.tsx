@@ -14,6 +14,8 @@ import { useNavigation } from "@react-navigation/native";
 import { LocalStorage } from "../../services/storage/local";
 import { Constants } from "../../utils/constants";
 import { Loading } from "../../components/Loading";
+import { useAuth } from "../../contexts/auth/useAuth";
+import { User } from "../../types/models/user";
 
 export interface SigninHandles {
     openModal: () => void;
@@ -30,17 +32,17 @@ type Input = {
 const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_, ref) => {
     const modalizeRef = useRef<Modalize>(null);
     const { t } = useTranslation();
+    const { signin } = useAuth();
     const navigation = useNavigation();
 
     const [loadingSignin, setLoadingSignin] = useState(false);
 
     const schema = yup.object().shape({
-        // email: yup.string().email().required(t("error.field.required")).typeError(t("error.field.required")),
-        email: yup.string().required(t("error.field.required")).typeError(t("error.field.required")),
+        email: yup.string().email().required(t("error.field.required")).typeError(t("error.field.required")),
         password: yup.string().required(t("error.field.required")).min(3, t("error.field.character.minimum.3")).typeError(t("error.field.required"))
     })
 
-    const { control, handleSubmit, formState: { errors } } = useForm<Input>({
+    const { control, handleSubmit, formState: { errors } } = useForm<User>({
         resolver: yupResolver(schema)
     });
 
@@ -59,17 +61,17 @@ const SigninComponent: ForwardRefRenderFunction<SigninHandles, SigninProps> = (_
 
     const MODAL_HEIGHT = useMemo(() => getPercentageValue(Dimensions.get('window').height, 20), [Dimensions]);
 
-    const onSignin = useCallback(async (data: Input) => {
+    const onSignin = useCallback(async (data: User) => {
         setLoadingSignin(true);
         setTimeout(() => {
-            LocalStorage.setItem(Constants.STORAGE.AUTH, data)
-                .then(() => {
-                    navigation.navigate("Main")
-                })
-                .finally(() => {
+            signin(
+                data,
+                () => {
                     setLoadingSignin(false);
-                })
-        }, 2500);
+                    navigation.navigate("Main");
+                }
+            );
+        }, 1500);
     }, []);
 
     return (
