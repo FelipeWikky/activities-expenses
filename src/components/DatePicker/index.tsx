@@ -13,10 +13,11 @@ type DatePickerProps = {
     control: Control<any>;
     name: string;
     label?: string;
-    disabled?: boolean;
+    editable?: boolean;
+    viewValue?: string | Date;
 }
 
-export const DatePicker: React.FC<DatePickerProps> = ({ label, name, control, type, disabled }) => {
+export const DatePicker: React.FC<DatePickerProps> = ({ label, name, control, type, editable, viewValue }) => {
 
     const [mode, setMode] = useState<undefined | "date" | "time">(undefined);
 
@@ -40,18 +41,18 @@ export const DatePicker: React.FC<DatePickerProps> = ({ label, name, control, ty
                                 setMode(undefined);
                             }}
                             onCancel={() => setMode(undefined)}
-                            date={value ? new Date(value) : new Date()}
+                            date={viewValue ? new Date(viewValue) : value ? new Date(value) : new Date()}
                         />
                         <DateTimeBox >
                             {showDate && (
-                                <DateTimeButton onPress={() => setMode("date")} disabled={disabled} >
+                                <DateTimeButton onPress={() => setMode("date")} disabled={!editable} >
                                     <DateTimeLabel>
                                         {formatDate(value) || "dd/mm/yyyy"}
                                     </DateTimeLabel>
                                 </DateTimeButton>
                             )}
                             {showTime && (
-                                <DateTimeButton onPress={() => setMode("time")} disabled={disabled} >
+                                <DateTimeButton onPress={() => setMode("time")} disabled={!editable} >
                                     <DateTimeLabel>
                                         {formatTime(value) || "hh:mm"}
                                     </DateTimeLabel>
