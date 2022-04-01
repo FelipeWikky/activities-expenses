@@ -19,6 +19,7 @@ import { formatDateTime } from "../../../utils/format";
 import { Input } from "../../Input";
 import { DatePicker } from "../../DatePicker";
 import { useTranslation } from "../../../contexts/translation/useTranslation";
+import { ExpenseForm } from "../ExpenseForm";
 
 export type DetailExpenseHandles = {
     open: () => void;
@@ -33,8 +34,6 @@ type DetailExpenseProps = {
     onCancel?: (item?: ExpenseItem) => void;
     onCloseModal?: () => void;
 }
-
-
 
 const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandles, DetailExpenseProps> = ({ onlyView = true, onSave, onCancel, onCloseModal, data }, ref) => {
     const modalizeRef = useRef<Modalize>(null);
@@ -103,11 +102,6 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
         resetFields();
     }, []);
 
-    const createdAsSameUpdated = useMemo(() => {
-        if (data?.createdAt === data?.updatedAt) return true;
-        return false;
-    }, [data?.createdAt, data?.updatedAt]);
-
     return (
         <Modal
             ref={modalizeRef}
@@ -143,93 +137,14 @@ const DetailExpenseComponent: React.ForwardRefRenderFunction<DetailExpenseHandle
                     />
                 </Header>
 
-                <Content>
-                    <Box>
-                        <Input
-                            control={control} type="text" name="title" 
-                            label={t("label.activity")}
-                            placeholder={t("label.placeholder.activity.activity")}
-                            error={errors?.title?.message}
-                        />
-                    </Box>
+                <ExpenseForm
+                    control={control}
+                    errors={errors}
+                    createdAt={data?.createdAt}
+                    updatedAt={data?.updatedAt}
+                />
 
-                    <Line shadow={2} marginVertical={12} />
-
-                    <Box>
-                        <Input
-                            control={control} type="text" name="description" 
-                            label={t("label.description")}
-                            placeholder={t("label.placeholder.activity.description")}
-                            error={errors?.description?.message}
-                        />
-                    </Box>
-
-                    <Line shadow={2} marginVertical={12} />
-
-                    <Box>
-                        <DatePicker type="datetime" name="whenAt" control={control} label={t("label.when.to", "?")} />
-                    </Box>
-
-                    <Line shadow={2} marginVertical={12} />
-
-                    <Box direction="row" justifyContent="space-between">
-                        <Box>
-                            <Title>{t("label.finished", "?")}</Title>
-                            <Checkbox
-                                control={control}
-                                name="finished"
-                                icon={{
-                                    background: "SUCCESS",
-                                    color: "WHITE"
-                                }}
-                            />
-                        </Box>
-                        <Box>
-                            <Title>{t("label.has.problem", "?")}</Title>
-                            <Checkbox
-                                control={control}
-                                name="hasError"
-                                icon={{
-                                    background: "DANGER",
-                                    color: "WHITE"
-                                }}
-                            />
-                        </Box>
-                    </Box>
-
-                    <Line shadow={2} marginVertical={12} />
-
-                    <Box>
-                        <Input
-                            control={control} type="text" name="comment" label={t("label.comment")}
-                            placeholder={t("label.placeholder.activity.comment")}
-                            error={errors?.comment?.message}
-                        />
-                    </Box>
-
-                    <Line shadow={2} marginVertical={12} />
-
-                    <Box direction="row" alignItems="center" justifyContent="space-between">
-                        <Title>
-                            {!!(data && data.createdAt) ? t("label.created.at"): t("label.created.at.in")}
-                        </Title>
-                        <Description style={{ marginBottom: 2 }}>
-                            {formatDateTime(data?.createdAt || new Date())}
-                        </Description>
-                    </Box>
-
-                    {!!(data?.updatedAt) && <Line shadow={2} marginVertical={12} />}
-
-                    {!createdAsSameUpdated && (
-                        <Box direction="row" alignItems="center" justifyContent="space-between">
-                            <Title>{t("label.updated.at")}</Title>
-                            <Description style={{ marginBottom: 2 }}>
-                                {formatDateTime(data?.updatedAt)}
-                            </Description>
-                        </Box>
-                    )}
-
-                </Content>
+                
             </Container>
         </Modal >
     );
