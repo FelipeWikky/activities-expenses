@@ -15,7 +15,7 @@ import { Icon } from "../../components/Icon";
 import { Box } from "../../layout/Box";
 import { useExpense } from "../../contexts/expense/useExpense";
 
-const BACK_ITEM_POSITION_TO_INITIAL_MS = 100;
+const BACK_ITEM_POSITION_TO_INITIAL_MS = 250;
 const WAIT_TO_DRAG_ITEM_AGAIN_MS = 500;
 
 export const Diary: React.FC = () => {
