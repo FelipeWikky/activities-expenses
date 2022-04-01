@@ -6,11 +6,11 @@ import React from 'react';
 import { View, ColorSchemeName, Pressable } from 'react-native';
 import { Icon } from '../components/Icon';
 import { useTranslation } from '../contexts/translation/useTranslation';
-import useColorScheme from '../hooks/useColorScheme';
 
-import Home from '../screens/Home';
-import Main from '../screens/Main';
+import { Home } from '../screens/Home';
+import { Main } from '../screens/Main';
 import { Settings } from '../screens/Settings';
+import { Diary } from '../screens/Diary';
 import { THEME } from '../theme';
 
 import LinkingConfiguration from './LinkingConfigurations';
@@ -23,7 +23,7 @@ const StackRoutes = () => (
         initialRouteName="Home"
         screenOptions={{
             header: () => <View />,
-            headerShown: false
+            headerShown: false,
         }}
     >
         <Stack.Screen name="Home" component={Home} />
@@ -40,6 +40,7 @@ const BottomTabRoutes = () => {
             screenOptions={{
                 tabBarActiveTintColor: THEME.COLORS.LABEL,
                 tabBarInactiveTintColor: THEME.COLORS.TEXT,
+                unmountOnBlur: true
             }}
         >
             <BottomTab.Screen
@@ -49,6 +50,7 @@ const BottomTabRoutes = () => {
                     header: () => <View />,
                     headerShown: false,
                     title: t("label.list"),
+                    tabBarStyle: { borderTopWidth: 1 },
                     tabBarIcon: ({ color }) =>
                         <Icon group='FontAwesome' name="list" customColor={color} size={25} />,
                 })}
@@ -56,11 +58,12 @@ const BottomTabRoutes = () => {
 
             <BottomTab.Screen
                 name='Diary'
-                component={Main}
+                component={Diary}
                 options={({ navigation }: RootTabScreenProps<'Diary'>) => ({
                     header: () => <View />,
                     headerShown: false,
                     title: t("label.diary"),
+                    tabBarStyle: { borderTopWidth: 1 },
                     tabBarIcon: ({ color }) =>
                         <Icon group='FontAwesome' name="calendar" customColor={color} size={25} />,
                 })}
@@ -73,6 +76,7 @@ const BottomTabRoutes = () => {
                     header: () => <View />,
                     headerShown: false,
                     title: t("label.settings"),
+                    tabBarStyle: { borderTopWidth: 1 },
                     tabBarIcon: ({ color }) =>
                         <Icon group='Ionicons' name="ios-settings-sharp" customColor={color} size={25} />,
                     // headerRight: () => (
