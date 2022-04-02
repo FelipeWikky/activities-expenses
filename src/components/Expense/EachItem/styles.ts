@@ -5,8 +5,6 @@ import { CheckerProps, TextProps } from "./types";
 import { Button } from "../../Button";
 
 export const Container = styled.View`
-    border-top-width: 1px;
-    border-bottom-width: 1px;
     border-style: solid;
     border-color: ${({ theme }) => theme.COLORS.TEXT_LOW};
     margin-bottom: 12px;
