@@ -2,12 +2,7 @@ import { useContext } from "react";
 import TranslationContext from "./";
 
 export const useTranslation = () => {
-    const { countryCode, language, onChangeLanguage, t } = useContext(TranslationContext);
+    const context = useContext(TranslationContext);
 
-    return {
-        t,
-        onChangeLanguage,
-        countryCode,
-        language
-    }
+    return context;
 }

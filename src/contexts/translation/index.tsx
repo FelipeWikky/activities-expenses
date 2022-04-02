@@ -8,6 +8,7 @@ type TranslationContextType = {
     countryCode: CountryCode;
     t: (key: keyof typeof TRANSLATE_KEYS, extraText?: string) => string;
     onChangeLanguage: (language: LanguageType, countryCode?: CountryCode) => Promise<void>;
+    TranslateKeyType: keyof typeof TRANSLATE_KEYS
 }
 
 const TranslationContext = createContext<TranslationContextType>({} as TranslationContextType);
@@ -50,7 +51,8 @@ export const TranslationProvider: React.FC = ({ children }) => {
                 language: languageSelected,
                 t: translate,
                 countryCode,
-                onChangeLanguage
+                onChangeLanguage,
+                TranslateKeyType: "label.activity"
             }}
         >
             {children}
