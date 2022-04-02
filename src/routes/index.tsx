@@ -11,10 +11,11 @@ import { Home } from '../screens/Home';
 import { Main } from '../screens/Main';
 import { Settings } from '../screens/Settings';
 import { Diary } from '../screens/Diary';
+import { Dashboard } from '../screens/Dashboard';
 import { THEME } from '../theme';
 
 import LinkingConfiguration from './LinkingConfigurations';
-import { BottomTabParamsList, RootTabScreenProps } from './types';
+import { RootTabParamList, RootTabScreenProps } from './types';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,18 +32,30 @@ const StackRoutes = () => (
     </Stack.Navigator>
 );
 
-const BottomTab = createBottomTabNavigator<BottomTabParamsList>();
+const BottomTab = createBottomTabNavigator<RootTabParamList>();
 const BottomTabRoutes = () => {
     const { t } = useTranslation();
     return (
         <BottomTab.Navigator
-            initialRouteName='List'
+            initialRouteName="Dashboard"
             screenOptions={{
                 tabBarActiveTintColor: THEME.COLORS.LABEL,
                 tabBarInactiveTintColor: THEME.COLORS.TEXT,
                 // unmountOnBlur: true
             }}
         >
+            <BottomTab.Screen
+                name="Dashboard"
+                component={Dashboard}
+                options={({ navigation }: RootTabScreenProps<'List'>) => ({
+                    header: () => <View />,
+                    headerShown: false,
+                    title: t("label.dashboard"),
+                    tabBarStyle: { borderTopWidth: 1 },
+                    tabBarIcon: ({ color }) =>
+                        <Icon group='FontAwesome' name="dashboard" customColor={color} size={25} />,
+                })}
+            />
             <BottomTab.Screen
                 name='List'
                 component={Main}
