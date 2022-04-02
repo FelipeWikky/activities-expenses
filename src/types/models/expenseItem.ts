@@ -34,9 +34,13 @@ export interface ExpenseItem {
     /**
      * Represente any date to indicate when this item has occurred
      */
-    whenAt?: string | Date; 
+    whenAt?: string | Date;
     /**
      * Indicate if this expense item is monthly
      */
     isMonthly?: boolean;
+}
+
+export enum ExpenseItemStatus {
+    PENDING = "Pending", FINISHED = "Finished", PROBLEM = "Problem"
 }
