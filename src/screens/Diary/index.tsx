@@ -80,7 +80,7 @@ export const Diary: React.FC = () => {
             <Header>
                 <HeaderContent>
                     <Label type="SUB_TITLE">
-                        {t("label.activity")}
+                        {t("label.diary")}
                     </Label>
                     <Label type="NORMAL_SMALL" style={{ marginBottom: 3 }}>
                         {" "} {formatDate(new Date())}
