@@ -21,18 +21,23 @@ import { useToast } from "../../../hooks/useToast";
 import { useTranslation } from "../../../contexts/translation/useTranslation";
 import { Loading } from "../../Loading";
 import { useExpense } from "../../../contexts/expense/useExpense";
+import { Line } from "../../../layout/Line";
 
-export const ListItem: React.FC = () => {
+type ListItemsProps = {
+    fromItems?: ExpenseItem[];
+}
+
+export const ListItem: React.FC<ListItemsProps> = ({ fromItems }) => {
     const toast = useToast();
     const { t } = useTranslation();
     const { items: expenseItems, loadingItems, onRefetchItems } = useExpense();
 
-    const [items, setItems] = useState<ExpenseItem[]>([]);
+    const [items, setItems] = useState<ExpenseItem[]>(fromItems || []);
     const [itemSelected, setItemSelected] = useState<ExpenseItem>();
 
     useEffect(() => {
-        if(expenseItems) setItems(expenseItems);
-    }, [expenseItems]);
+        if (expenseItems && !fromItems) setItems(expenseItems);
+    }, [expenseItems, fromItems]);
 
     const detailRef = useRef<DetailExpenseHandles>(null);
 
@@ -152,45 +157,52 @@ export const ListItem: React.FC = () => {
                 onCloseModal={() => setItemSelected(undefined)}
             />
 
-            <Header>
-                <Button empty onPress={onAddNewItemToList}>
-                    <PlusIcon />
-                </Button>
+            {!(fromItems) && (
+                <Header>
+                    <Button empty onPress={onAddNewItemToList}>
+                        <PlusIcon />
+                    </Button>
 
-                <HeaderContent>
-                    <Label type="SUB_TITLE">
-                        {t("label.activity")}
-                    </Label>
-                    <Label type="NORMAL_SMALL" style={{ marginBottom: 3 }}>
-                        {" "} {formatDate(new Date())}
-                    </Label>
-                </HeaderContent>
+                    <HeaderContent>
+                        <Label type="SUB_TITLE">
+                            {t("label.activity")}
+                        </Label>
+                        <Label type="NORMAL_SMALL" style={{ marginBottom: 3 }}>
+                            {" "} {formatDate(new Date())}
+                        </Label>
+                    </HeaderContent>
 
-                <Button empty onPress={handleShowFilter}>
-                    <FilterIndicatorIcon name={filterShowed ? "arrow-circle-up" : "arrow-circle-down"} />
-                </Button>
-            </Header>
+                    <Button empty onPress={handleShowFilter}>
+                        <FilterIndicatorIcon name={filterShowed ? "arrow-circle-up" : "arrow-circle-down"} />
+                    </Button>
+                </Header>
+            )}
 
-            <Animated.View style={filterStyles}>
-                <FilterList
-                    handleFilter={setFilters}
-                />
-            </Animated.View>
-
-            {loadingItems && <Loading />}
-            <EachItemList
-                data={sortByDate<ExpenseItem>(items, 'updatedAt')}
-                keyExtractor={item => item.id ? item.id.toString() : item.title}
-                renderItem={({ item }) => (
-                    <EachItem
-                        data={item}
-                        actions={{
-                            onSelect: onSelectItemFromList,
-                            onRemove: onRemoveItemFromList,
-                            onAddError: onAddErrorItem,
-                            onFinish: onFinishItem
-                        }}
+            {!(fromItems) && (
+                <Animated.View style={filterStyles}>
+                    <FilterList
+                        handleFilter={setFilters}
                     />
+                </Animated.View>
+            )}
+
+            {(loadingItems && !(fromItems)) && <Loading />}
+            <EachItemList
+                data={sortByDate<ExpenseItem>(items, !!(fromItems) ? "id" : "updatedAt")}
+                keyExtractor={item => item.id ? item.id.toString() : item.title}
+                renderItem={({ item, index }) => (
+                    <>
+                        <EachItem
+                            data={item}
+                            actions={{
+                                onSelect: onSelectItemFromList,
+                                onRemove: onRemoveItemFromList,
+                                onAddError: onAddErrorItem,
+                                onFinish: onFinishItem
+                            }}
+                        />
+                        <Line shadow={2} />
+                    </>
                 )}
                 ListEmptyComponent={() => (
                     <EmptyContainer>
