@@ -33,6 +33,9 @@ export const en_US: TranslateWord = {
     "label.hello": "Hello",
     "label.change.language": "Change language",
     "label.signout": "Signout",
+    "label.dashboard": "Dashboard",
+    "label.item": "Item",
+    "label.items": "Items",
 
     "label.placeholder.signin.email": "Inform your email",
     "label.placeholder.signin.password": "Inform your password",

@@ -68,4 +68,7 @@ export enum TRANSLATE_KEYS {
     "label.hello",
     "label.change.language",
     "label.signout",
+    "label.dashboard",
+    "label.item",
+    "label.items"
 }
