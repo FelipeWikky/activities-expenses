@@ -9,6 +9,7 @@ export enum IconGroup {
     Entypo,
     MaterialIcons,
     Feather,
+    Foundation
 }
 
 export type IconProps = {

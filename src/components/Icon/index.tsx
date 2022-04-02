@@ -1,5 +1,6 @@
+// https://icons.expo.fyi/
+
 import React from "react";
-/// <reference path="https://icons.expo.fyi/" />
 
 import {
     Ionicons,
@@ -8,7 +9,8 @@ import {
     AntDesign,
     Entypo,
     MaterialIcons,
-    Feather
+    Feather, 
+    Foundation
 } from '@expo/vector-icons';
 import { IconGroup, IconProps } from "./types";
 import { THEME } from "../../theme";
@@ -35,6 +37,8 @@ const getIconComponentByProps = (
             return <MaterialIcons name={name} color={color} size={size} style={style} />;
         case "Feather":
             return <Feather name={name} color={color} size={size} style={style} />;
+        case "Foundation":
+            return <Foundation name={name} color={color} size={size} style={style} />;
 
     }
 }
